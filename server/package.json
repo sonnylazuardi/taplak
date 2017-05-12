@@ -1,0 +1,14 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "bukalapak-api": "^0.1.5",
+    "micro": "^7.3.3",
+    "microrouter": "^2.1.0"
+  },
+  "scripts": {
+    "start": "micro index"
+  }
+}
