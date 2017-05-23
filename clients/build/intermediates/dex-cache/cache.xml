@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/.android/build-cache/b43a47ff8de55213feb7ef4dac23694d793b4105/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="0ecb4b595fa0f0f8018a149ace3ea6525624f94e">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/classes_36735cb161c59ef12d0565777aa8a39bd1244237.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/.android/build-cache/ee9108215697c14f1110b8906e99fb9f4371e485/output/jars/libs/internal_impl-24.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="935a969265b2a166b2d20415423f5f6e90fe16e0">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/internal_impl-24.2.1_abb2f17582544d99b284aaf1c4f405084b380244.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/.android/build-cache/09cb39b86bcc1f5c383391a0b5c0b1d8dc24fe36/output/jars/libs/internal_impl-24.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="867dad63c33388ff8c7644b236579355036d075f">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/internal_impl-24.2.1_5abf720463057e8bdbbb805f7324024474fe1950.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/.android/build-cache/09cb39b86bcc1f5c383391a0b5c0b1d8dc24fe36/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="e7f3132168957eefc46229fc32c3bd464642b71e">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/classes_bdf8d855b03d2a1342bd3cdbfa555b50ba64da7a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/.android/build-cache/cad9817ddc958d81d3553e826026cb3f6a6f8e3b/output/jars/libs/internal_impl-24.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="5f64d657e838e8375135c0f6057a7ff8fab6a50e">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/internal_impl-24.2.1_ecda9b25eadcb63e0d117332bbce55efe2e8692b.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/.android/build-cache/cad9817ddc958d81d3553e826026cb3f6a6f8e3b/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="b9a1ac78ad7ef3abedc4a4b30cd92bcacb939d1f">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/classes_e8fb8de61f0b0b557115f94f4bf728064eff06ba.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/.android/build-cache/ee9108215697c14f1110b8906e99fb9f4371e485/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="9c4c3bc902450c39ed54de170db4fb12aea20a35">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/classes_b6243b1137f021a69f943fe9f607e3bde2a4179d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/.android/build-cache/c676548f36d5f5f587d0cb4042f50cd3025f1c4c/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="09b462bbcb77650284bd6614f1a32f360ef369f8">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/classes_3fc11d4defaf945acd388014b21f819862154256.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/.android/build-cache/ced4a8e976571c11624096097d82d75aa4309414/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="d5c731fc64c03dfe04d51134955b483551c35849">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/classes_81c5ce4b70682a71d07c70b1d1a151db00d1ce4d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/.android/build-cache/c676548f36d5f5f587d0cb4042f50cd3025f1c4c/output/jars/libs/internal_impl-24.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="fbf8da429efd5ad21e02e3e5ecaa1efc4167878d">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/internal_impl-24.2.1_40432ca84a49d6aa11da348b437fd16c3c88fe52.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/.android/build-cache/8bd03665511324afffd5211c85924ddb0b93b696/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/classes_0830df3137d26098fa7bfd9b9cccf55ac5b69660.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/.android/build-cache/b43a47ff8de55213feb7ef4dac23694d793b4105/output/jars/libs/internal_impl-24.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="7e4389bd133359a2ff88623ff1e4ff93d6e6f780">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/internal_impl-24.2.1_14ef49edb660a8409ee8a5fd9d84a92f8e162d00.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/.android/build-cache/97b70173c064ab398a7a182fd023ebcfd08d285b/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="43b2dba6b5a0b14527961b75329d0b90025f15ea">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/classes_14dec75ad73b1b491d42bac67d886d0eac6fb47c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/.android/build-cache/13faf01b07910e0ad6859c7e5efd5ec50d857674/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="94bc1dfb84dcc8b6f6f8f7cc726d7b2dd39c1574">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/classes_a97c778575ba0798e9b262fda6578e294bb122fd.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sonnylazuardi/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/24.2.1/support-annotations-24.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="8de3aafecbdf98a61db6427f008f2d515bcd2544">
+        <dex dex="/Users/sonnylazuardi/Documents/projects/taplak/client/app/build/intermediates/pre-dexed/debug/support-annotations-24.2.1_441be9b9a7fcbaba6daee1d1529944324bcd0069.jar" />
+    </item>
+
+</items>
