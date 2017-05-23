@@ -26,8 +26,9 @@ public class FloatingViewService extends Service {
     }
 
     @Override
-    public void onCreate() {
+        public void onCreate() {
         super.onCreate();
+
         //Inflate the floating view layout we created
         mFloatingView = LayoutInflater.from(this).inflate(R.layout.layout_floating_widget, null);
 

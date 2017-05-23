@@ -8,6 +8,7 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
+import info.androidhive.floatingview.ClipboardMonitorService;
 
 public class MainActivity extends AppCompatActivity {
     private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
@@ -16,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        startService(new Intent(this, ClipboardMonitorService.class));
         //Check if the application has draw over other apps permission or not?
         //This permission is by default available for API<23. But for API > 23
         //you have to ask for the permission in runtime.
