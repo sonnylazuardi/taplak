@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <!--Icon of floating widget -->
             <ImageView
@@ -47,7 +47,9 @@
             android:background="#F8BBD0"
             android:orientation="horizontal"
             android:padding="8dp"
-            android:visibility="gone">
+            android:visibility="visible">
+
+
 
             <!--Album image for the song currently playing.-->
             <ImageView
@@ -75,6 +77,13 @@
                 android:layout_marginLeft="10dp"
                 android:src="@mipmap/ic_play"
                 tools:ignore="ContentDescription" />
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/my_recycler_view"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:scrollbars="vertical" />
 
             <!--Next button-->
             <ImageView
