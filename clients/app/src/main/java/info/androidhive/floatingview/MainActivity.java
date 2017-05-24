@@ -10,8 +10,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.Map;
+
+import info.androidhive.floatingview.http.BukalapakHeaderInterceptor;
+import info.androidhive.floatingview.model.APIAIRequest;
+import info.androidhive.floatingview.model.APIAIResponse;
 import info.androidhive.floatingview.model.ProductResponse;
+import info.androidhive.floatingview.services.ApiAiClientService;
 import info.androidhive.floatingview.services.BukalapakApiService;
+import okhttp3.Interceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -19,7 +26,10 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
 
-    private BukalapakApiService blApiService = new BukalapakApiService();
+    private BukalapakApiService blApiService;
+    private Interceptor blHeaderInterceptor = new BukalapakHeaderInterceptor();
+
+    private ApiAiClientService apiaiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
             initializeView();
         }
 
+        this.blApiService = new BukalapakApiService(this.blHeaderInterceptor);
+
         blApiService.getService().getProducts("pixie", 1, 5).enqueue(new Callback<ProductResponse>() {
             @Override
             public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
@@ -50,6 +62,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ProductResponse> call, Throwable t) {
 
+            }
+        });
+
+        this.apiaiService = new ApiAiClientService();
+        APIAIRequest apiaiRequest = new APIAIRequest();
+        apiaiRequest.addQuery("i want to buy car");
+
+        this.apiaiService.getService().query(apiaiRequest).enqueue(new Callback<APIAIResponse>() {
+            @Override
+            public void onResponse(Call<APIAIResponse> call, Response<APIAIResponse> response) {
+                APIAIResponse res = response.body();
+                Map<String, Object> map = res.getResult().getParameters();
+                Log.d("debug", "debug");
+            }
+
+            @Override
+            public void onFailure(Call<APIAIResponse> call, Throwable t) {
+                Log.d("error", "err");
             }
         });
 
