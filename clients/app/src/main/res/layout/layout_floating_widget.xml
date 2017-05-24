@@ -16,9 +16,9 @@
         <RelativeLayout
             android:id="@+id/collapse_view"
             android:layout_width="wrap_content"
-            android:visibility="visible"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <!--Icon of floating widget -->
             <ImageView
@@ -27,7 +27,7 @@
                 android:layout_height="60dp"
                 android:layout_marginTop="8dp"
                 android:src="@drawable/ic_android_circle"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription" />
 
             <!--Close button-->
             <ImageView
@@ -36,7 +36,7 @@
                 android:layout_height="20dp"
                 android:layout_marginLeft="40dp"
                 android:src="@drawable/ic_close"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription" />
         </RelativeLayout>
 
         <!--View while view is expanded-->
@@ -45,16 +45,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#F8BBD0"
-            android:visibility="gone"
             android:orientation="horizontal"
-            android:padding="8dp">
+            android:padding="8dp"
+            android:visibility="gone">
 
             <!--Album image for the song currently playing.-->
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:src="@drawable/music_player"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription" />
 
             <!--Previous button-->
             <ImageView
@@ -64,7 +64,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp"
                 android:src="@mipmap/ic_previous"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription" />
 
             <!--Play button-->
             <ImageView
@@ -74,7 +74,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:src="@mipmap/ic_play"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription" />
 
             <!--Next button-->
             <ImageView
@@ -84,7 +84,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:src="@mipmap/ic_play_next"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -95,14 +95,14 @@
                     android:id="@+id/close_button"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_close"/>
+                    android:src="@drawable/ic_close" />
 
                 <ImageView
                     android:id="@+id/open_button"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentBottom="true"
-                    android:src="@drawable/ic_open"/>
+                    android:src="@drawable/ic_open" />
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
