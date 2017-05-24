@@ -6,12 +6,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-import info.androidhive.floatingview.ClipboardMonitorService;
+
+import info.androidhive.floatingview.model.ProductResponse;
+import info.androidhive.floatingview.services.BukalapakApiService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
+
+    private BukalapakApiService blApiService = new BukalapakApiService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +39,20 @@ public class MainActivity extends AppCompatActivity {
         } else {
             initializeView();
         }
+
+        blApiService.getService().getProducts("pixie", 1, 5).enqueue(new Callback<ProductResponse>() {
+            @Override
+            public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
+                ProductResponse res = response.body();
+                Log.d(this.getClass().getName(), "Get the res");
+            }
+
+            @Override
+            public void onFailure(Call<ProductResponse> call, Throwable t) {
+
+            }
+        });
+
     }
 
     /**
