@@ -15,45 +15,24 @@
         <!--View while view is collapsed-->
         <RelativeLayout
             android:id="@+id/collapse_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_width="100dp"
+            android:background="@color/colorPrimary"
+            android:layout_height="100dp"
+            android:orientation="horizontal"
             android:visibility="visible">
 
-            <!--Icon of floating widget -->
-            <ImageView
-                android:id="@+id/collapsed_iv"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_android_circle"
-                tools:ignore="ContentDescription" />
-
-            <!--Close button-->
-            <ImageView
-                android:id="@+id/close_btn"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="40dp"
-                android:src="@drawable/ic_close"
-                tools:ignore="ContentDescription" />
         </RelativeLayout>
 
         <!--View while view is expanded-->
-        <LinearLayout
-            android:id="@+id/expanded_container"
-            android:layout_width="220dp"
-            android:layout_height="wrap_content"
-            android:background="#F8BBD0"
-            android:orientation="horizontal"
-            android:padding="8dp"
-            android:visibility="gone">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/cardView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/expanded_container"-->
+            <!--android:layout_width="220dp"-->
+            <!--android:layout_height="220dp"-->
+            <!--android:background="#F8BBD0"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:padding="8dp"-->
+            <!--android:visibility="gone">-->
+            <!---->
+        <!--</LinearLayout>-->
     </RelativeLayout>
 </FrameLayout>

@@ -1,0 +1,19 @@
+{
+  "name": "taplak-rn",
+  "version": "1.0.0",
+  "description": "taplak with react native",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node node_modules/react-native/local-cli/cli.js start"
+  },
+  "keywords": [
+    "taplak"
+  ],
+  "author": "sonnylazuardi",
+  "license": "MIT",
+  "dependencies": {
+    "react": "15.4.1",
+    "react-native": "0.42.0"
+  }
+}
