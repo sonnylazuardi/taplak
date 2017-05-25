@@ -1,5 +1,6 @@
 package info.androidhive.floatingview.services;
 
+import info.androidhive.floatingview.model.User;
 import info.androidhive.floatingview.model.ProductResponse;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -7,7 +8,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Body;
 import retrofit2.http.Query;
+import retrofit2.http.Field;
 
 /**
  * Created by imrenagi on 5/23/17.
@@ -20,6 +23,9 @@ public interface BukalapakService {
             @Query("keywords") String keywords,
             @Query("page") Integer pageNumber,
             @Query("per_page") Integer limitPerPage);
+
+    @POST("authenticate.json")
+    Call<User> login();
 
     public static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://api.bukalapak.com/v2/")

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import info.androidhive.floatingview.model.ProductResponse;
+import info.androidhive.floatingview.model.User;
 import info.androidhive.floatingview.services.BukalapakApiService;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,10 +41,26 @@ public class MainActivity extends AppCompatActivity {
             initializeView();
         }
 
+        blApiService.getLoginService("philipkeren", "philipkeren").login().enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, retrofit2.Response<User> response) {
+                User res = response.body();
+
+                Log.d(this.getClass().getName(), "Login");
+
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.d(this.getClass().getName(), "Fail Login");
+            }
+        });
+
         blApiService.getService().getProducts("pixie", 1, 5).enqueue(new Callback<ProductResponse>() {
             @Override
             public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
                 ProductResponse res = response.body();
+                System.out.println(response.raw());
                 Log.d(this.getClass().getName(), "Get the res");
             }
 
