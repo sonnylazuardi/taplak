@@ -6,7 +6,7 @@ import info.androidhive.floatingview.services.BukalapakApiService;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-
+import android.util.*;
 /**
  * Created by Philip on 25/5/17.
  */
@@ -24,7 +24,12 @@ public class BukalapakLoginInterceptor implements Interceptor{
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request.Builder builder = chain.request().newBuilder();
-        builder.addHeader(this.username, this.password);
+        String credentials = username + ":" + password;
+        // create Base64 encodet string
+        final String basic =
+                "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
+        builder.addHeader("Authorization", basic);
+        builder.addHeader("Accept", "application/json");
         return chain.proceed(builder.build());
     }
 }

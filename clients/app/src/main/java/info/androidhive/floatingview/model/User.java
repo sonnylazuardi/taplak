@@ -20,7 +20,17 @@ public class User {
 
     private String token;
 
+    private String message;
+
     private String status;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public String getUsername() {
         return username;

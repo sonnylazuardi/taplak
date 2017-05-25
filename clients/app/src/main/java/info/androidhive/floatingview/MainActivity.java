@@ -41,11 +41,12 @@ public class MainActivity extends AppCompatActivity {
             initializeView();
         }
 
-        blApiService.getLoginService("philipkeren", "philipkeren").login().enqueue(new Callback<User>() {
+        blApiService.getLoginService("muhammad.mustadi@gmail.com", "bldc2017").login().enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, retrofit2.Response<User> response) {
-                User res = response.body();
 
+                User res = response.body();
+                System.out.println(res.getMessage());
                 Log.d(this.getClass().getName(), "Login");
 
             }
