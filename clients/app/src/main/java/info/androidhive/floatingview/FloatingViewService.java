@@ -8,6 +8,7 @@ import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,11 +22,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.ArrayList;
 
 import static android.R.id.message;
+import static android.R.id.toggle;
 import static android.content.ContentValues.TAG;
 
 
@@ -38,33 +42,11 @@ public class FloatingViewService extends Service {
 
     private Intent intent;
     private RelativeLayout mCollapseView;
+    private RelativeLayout mDragView;
+    private ImageView mCloseView;
     public static Context context;
 
     public FloatingViewService() {
-    }
-
-    public static void hideBalloon() {
-        Log.d("TEST", "HIDE BALLOON");
-        //        //The root element of the collapsed view layout
-//        final View collapsedView = mFloatingView.findViewById(R.id.collapse_view);
-
-//        View collapsedView = mFloatingView.findViewById(R.id.collapse_view);
-//        collapsedView.getLayoutParams().height = 800;
-//        collapsedView.getLayoutParams().width = 800;
-//        collapsedView.requestLayout();
-//        collapsedView.setLayoutParams(new RelativeLayout.LayoutParams(300,300));
-    }
-
-    public static void showBalloon() {
-        Log.d("TEST", "SHOW BALLOON");
-        //        //The root element of the collapsed view layout
-//        final View collapsedView = mFloatingView.findViewById(R.id.collapse_view);
-//        View mFloatingView = LayoutInflater.from(context).inflate(R.layout.layout_floating_widget, null);
-//        View collapsedView = mFloatingView.findViewById(R.id.collapse_view);
-//        collapsedView.getLayoutParams().height = 100;
-//        collapsedView.getLayoutParams().width = 100;
-//        collapsedView.requestLayout();
-//        collapsedView.setLayoutParams(new RelativeLayout.LayoutParams(100,100));
     }
 
     @Override
@@ -72,10 +54,14 @@ public class FloatingViewService extends Service {
         return null;
     }
 
+    public static int getDPI(int size, DisplayMetrics metrics){
+        return (size * metrics.densityDpi) / DisplayMetrics.DENSITY_DEFAULT;
+    }
+
     @Override
         public void onCreate() {
         super.onCreate();
-        context = this;
+        context = this.getApplicationContext();
 
         //Inflate the floating view layout we created
         mFloatingView = LayoutInflater.from(this).inflate(R.layout.layout_floating_widget, null);
@@ -94,77 +80,95 @@ public class FloatingViewService extends Service {
         params.y = 100;
 
         mCollapseView = (RelativeLayout) mFloatingView.findViewById(R.id.collapse_view);
+        mDragView = (RelativeLayout) mFloatingView.findViewById(R.id.expanded_container);
+        mCloseView = (ImageView) mFloatingView.findViewById(R.id.close_btn);
         mCollapseView.addView(MyReactActivity.mReactRootView);
 
         //Add the view to the window
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         mWindowManager.addView(mFloatingView, params);
 //        mWindowManager.addView(MyReactActivity.mReactRootView, params);
-
-//        collapsedView = mFloatingView.findViewById(R.id.collapse_view);
 //
 //        this.hideBalloon();
 
+        final DisplayMetrics metrics;
+        metrics = new DisplayMetrics();
+        mWindowManager.getDefaultDisplay().getMetrics(metrics);
 
-//        //Drag and move floating view using user's touch action.
-//        mFloatingView.findViewById(R.id.root_container).setOnTouchListener(new View.OnTouchListener() {
-//            private int initialX;
-//            private int initialY;
-//            private float initialTouchX;
-//            private float initialTouchY;
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//
-//                        //remember the initial position.
-//                        initialX = params.x;
-//                        initialY = params.y;
-//
-//                        //get the touch location
-//                        initialTouchX = event.getRawX();
-//                        initialTouchY = event.getRawY();
-//                        return true;
-//                    case MotionEvent.ACTION_UP:
-//                        int Xdiff = (int) (event.getRawX() - initialTouchX);
-//                        int Ydiff = (int) (event.getRawY() - initialTouchY);
-//
-//                        //The check for Xdiff <10 && YDiff< 10 because sometime elements moves a little while clicking.
-//                        //So that is click event.
-//                        if (Xdiff < 10 && Ydiff < 10) {
-//                            if (isViewCollapsed()) {
-//                                //When user clicks on the image view of the collapsed layout,
-//                                //visibility of the collapsed layout will be changed to "View.GONE"
-//                                //and expanded view will become visible.
-//                                collapsedView.setVisibility(View.GONE);
-//                                expandedView.setVisibility(View.VISIBLE);
-//                            }
-//                        }
-//                        return true;
-//                    case MotionEvent.ACTION_MOVE:
-//                        //Calculate the X and Y coordinates of the view.
-//                        params.x = initialX + (int) (event.getRawX() - initialTouchX);
-//                        params.y = initialY + (int) (event.getRawY() - initialTouchY);
-//
-//                        //Update the layout with new X & Y coordinate
-//                        mWindowManager.updateViewLayout(mFloatingView, params);
-//                        return true;
-//                }
-//                return false;
-//            }
-//        });
+        ImageView closeButtonCollapsed = (ImageView) mFloatingView.findViewById(R.id.close_btn);
+        closeButtonCollapsed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //close the service and remove the from from the window
+                if (mDragView.getVisibility() == View.VISIBLE) {
+                    mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(300, metrics)));
+                    mDragView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(300, metrics)));
+                    mDragView.setVisibility(View.GONE);
+                    mCloseView.setVisibility(View.VISIBLE);
+                    FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                            .emit("SHOW_BALLOON", false);
+                } else {
+                    mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(80, metrics),getDPI(80, metrics)));
+                    mDragView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(80, metrics),getDPI(80, metrics)));
+                    mDragView.setVisibility(View.VISIBLE);
+                    mCloseView.setVisibility(View.GONE);
+                    FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                            .emit("SHOW_BALLOON", true);
+                }
+            }
+        });
+
+        //Drag and move floating view using user's touch action.
+        mFloatingView.findViewById(R.id.expanded_container).setOnTouchListener(new View.OnTouchListener() {
+            private int initialX;
+            private int initialY;
+            private float initialTouchX;
+            private float initialTouchY;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (mDragView.getVisibility() == View.GONE) return false;
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+
+                        //remember the initial position.
+                        initialX = params.x;
+                        initialY = params.y;
+
+                        //get the touch location
+                        initialTouchX = event.getRawX();
+                        initialTouchY = event.getRawY();
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        int Xdiff = (int) (event.getRawX() - initialTouchX);
+                        int Ydiff = (int) (event.getRawY() - initialTouchY);
+
+                        //The check for Xdiff <10 && YDiff< 10 because sometime elements moves a little while clicking.
+                        //So that is click event.
+                        if (Xdiff < 10 && Ydiff < 10) {
+                            mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(300, metrics)));
+                            mDragView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(300, metrics)));
+                            mDragView.setVisibility(View.GONE);
+                            mCloseView.setVisibility(View.VISIBLE);
+                            FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                                    .emit("SHOW_BALLOON", false);
+                        }
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+
+                        //Calculate the X and Y coordinates of the view.
+                        params.x = initialX + (int) (event.getRawX() - initialTouchX);
+                        params.y = initialY + (int) (event.getRawY() - initialTouchY);
+
+                        //Update the layout with new X & Y coordinate
+                        mWindowManager.updateViewLayout(mFloatingView, params);
+                        return true;
+                }
+                return false;
+            }
+        });
 
 
-    }
-
-    /**
-     * Detect if the floating view is collapsed or expanded.
-     *
-     * @return true if the floating view is collapsed.
-     */
-    private boolean isViewCollapsed() {
-        return mFloatingView == null || mFloatingView.findViewById(R.id.collapse_view).getVisibility() == View.VISIBLE;
     }
 
     @Override

@@ -7,25 +7,36 @@ import {
   Text,
   View,
   TouchableOpacity,
-  NativeModules
+  NativeModules,
+  NativeEventEmitter,
+  Image,
 } from 'react-native';
 
 const FloatingAndroid = NativeModules.FloatingAndroid;
 
+import Login from './containers/Login';
+
 class HelloWorld extends React.Component {
+  subscription = null;
   state = {
     showBalloon: true,
+  }
+  componentDidMount() {
+    const floating = new NativeEventEmitter(FloatingAndroid);
+    this.subscription = floating.addListener('SHOW_BALLOON',(showBalloon) => {
+      console.log(`TEST: SHOW_BALLOON ${showBalloon}`);
+      this.setState({
+        showBalloon,
+      });
+    });
+  }
+  componentWillUnmount() {
+    this.subscription.remove();
   }
   toggleShowBalloon = () => {
     const {showBalloon} = this.state;
     this.setState({
       showBalloon: !showBalloon,
-    }, () => {
-      if (this.state.showBalloon) {
-        FloatingAndroid.show();
-      } else {
-        FloatingAndroid.hide();
-      }
     });
   }
   render() {
@@ -33,15 +44,12 @@ class HelloWorld extends React.Component {
     return (
       <View style={styles.container}>
         {showBalloon ?
-          <TouchableOpacity style={styles.ballon} onPress={this.toggleShowBalloon}>
-            <Text style={styles.hello}>Hide Balloon</Text>
-          </TouchableOpacity>
+          <View style={styles.balloon}>
+            <Image style={styles.imageLogo} source={require('./assets/icon.png')} />
+          </View>
           :
           <View style={styles.box}>
-            <TouchableOpacity onPress={this.toggleShowBalloon}>
-              <Text style={styles.hello}>Show Balloon</Text>
-            </TouchableOpacity>
-            <Text style={styles.hello}>Box</Text>
+            <Login />
           </View>}
       </View>
     )
@@ -50,25 +58,31 @@ class HelloWorld extends React.Component {
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#999',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   hello: {
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
   },
-  ballon: {
-    width: 100,
-    height: 100,
+  balloon: {
+    width: 80,
+    height: 80,
     backgroundColor: '#fff',
-    borderRadius: 50,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 2,
+  },
+  imageLogo: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
   box: {
-    backgroundColor: '#888',
-    width: 100,
-    height: 100,
+    flex: 1,
+    backgroundColor: '#fff',
+    borderRadius: 4,
+    elevation: 2,
   }
 });
 

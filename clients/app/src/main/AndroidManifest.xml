@@ -20,18 +20,17 @@
         <!--</activity>-->
         <activity
             android:name="info.androidhive.floatingview.MyReactActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <service
-            android:name="info.androidhive.floatingview.ClipboardMonitorService"
-            android:enabled="true"
-            android:exported="false"/>
+        <!--<service-->
+            <!--android:name="info.androidhive.floatingview.ClipboardMonitorService"-->
+            <!--android:enabled="true"-->
+            <!--android:exported="false"/>-->
         <service
             android:name="info.androidhive.floatingview.FloatingViewService"
             android:enabled="true"

@@ -15,13 +15,31 @@
         <!--View while view is collapsed-->
         <RelativeLayout
             android:id="@+id/collapse_view"
-            android:layout_width="100dp"
-            android:background="@color/colorPrimary"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:orientation="horizontal"
             android:visibility="visible">
 
         </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/expanded_container"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/close_btn"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_close"
+            tools:ignore="ContentDescription"
+            android:visibility="gone"/>
 
         <!--View while view is expanded-->
         <!--<LinearLayout-->

@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -18,7 +19,7 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.shell.MainReactPackage;
 
-public class MyReactActivity extends Activity implements DefaultHardwareBackBtnHandler {
+public class MyReactActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler {
     public static ReactRootView mReactRootView;
     private ReactInstanceManager mReactInstanceManager;
     private static final int OVERLAY_PERMISSION_REQ_CODE = 2084;
@@ -57,7 +58,7 @@ public class MyReactActivity extends Activity implements DefaultHardwareBackBtnH
             @Override
             public void onClick(View view) {
                 Toast.makeText(MyReactActivity.this,
-                        "You click the button",
+                        "Membuka balon taplak",
                         Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(MyReactActivity.this, FloatingViewService.class);

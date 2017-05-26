@@ -11,20 +11,21 @@ import com.facebook.react.bridge.ReactMethod;
 import java.util.Map;
 
 public class FloatingModule extends ReactContextBaseJavaModule {
-
+    public static ReactContext mReactContext;
 
     public FloatingModule(ReactApplicationContext reactContext) {
         super(reactContext);
+        mReactContext = reactContext;
     }
 
     @ReactMethod
     public void show() {
-        FloatingViewService.showBalloon();
+
     }
 
     @ReactMethod
     public void hide() {
-        FloatingViewService.hideBalloon();
+
     }
 
     @Override
