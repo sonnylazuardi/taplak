@@ -9,6 +9,7 @@ import {
   NativeEventEmitter,
   Image,
   AsyncStorage,
+  ScrollView,
 } from 'react-native';
 import {connect} from 'react-redux';
 
@@ -49,6 +50,26 @@ class App extends React.Component {
           :
           <View style={styles.box}>
             <Text style={styles.hello}>{loggedIn ? 'SUDAH LOGIN' : 'BELUM LOGIN'}</Text>
+            <ScrollView horizontal={true}>
+              <View style={styles.card}>
+                <Text>Produk 1</Text>
+              </View>
+              <View style={styles.card}>
+                <Text>Produk 2</Text>
+              </View>
+              <View style={styles.card}>
+                <Text>Produk 3</Text>
+              </View>
+              <View style={styles.card}>
+                <Text>Produk 4</Text>
+              </View>
+              <View style={styles.card}>
+                <Text>Produk 5</Text>
+              </View>
+              <View style={styles.card}>
+                <Text>Produk 6</Text>
+              </View>
+            </ScrollView>
           </View>}
       </View>
     )
@@ -57,6 +78,12 @@ class App extends React.Component {
 var styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  card: {
+    backgroundColor: '#ddd',
+    borderRadius: 4,
+    padding: 15,
+    margin: 5,
   },
   hello: {
     fontSize: 20,

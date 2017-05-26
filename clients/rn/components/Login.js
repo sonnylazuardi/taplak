@@ -14,6 +14,7 @@ import {
   TextInput,
   AsyncStorage,
 } from 'react-native';
+import * as appActions from '../actions/AppActions';
 
 class Login extends React.Component {
   state = {
@@ -21,7 +22,12 @@ class Login extends React.Component {
     password: '',
   }
   onLogin = () => {
-    this.props.onLoggedIn && this.props.onLoggedIn();
+    const {email, password} = this.state;
+    console.log('LOGIN', email, password);
+    this.props.dispatch(appActions.login(email, password)).then((result) => {
+      console.log('RESULT', result)
+    });
+    // this.props.onLoggedIn && this.props.onLoggedIn();
   }
   onLogout = () => {
     this.props.onLoggedOut && this.props.onLoggedOut();
@@ -46,10 +52,13 @@ class Login extends React.Component {
               value={email}
               placeholder={'Email'}
               onChangeText={(email) => {
-                console.log('email', email);
                 this.setState({email})
               }}/>
-            <TextInput value={password} secureTextEntry={true} placeholder={'Password'} onChangeText={(password) => this.setState({password})}/>
+            <TextInput
+              value={password}
+              secureTextEntry={true}
+              placeholder={'Password'}
+              onChangeText={(password) => this.setState({password})}/>
 
             <TouchableNativeFeedback onPress={this.onLogin}>
               <View style={styles.button}>
