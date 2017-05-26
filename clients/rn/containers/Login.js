@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import {
   AppRegistry,
@@ -10,60 +8,44 @@ import {
   NativeModules,
   NativeEventEmitter,
   Image,
-  TextInput,
+  AsyncStorage,
 } from 'react-native';
+import {connect} from 'react-redux';
+
+import LoginView from '../components/Login';
+import * as appActions from '../actions/AppActions';
 
 class Login extends React.Component {
   state = {
-    email: '',
-    password: '',
+
   }
-  onLogin = () => {
-    console.log('login');
-    this.setState({email: 'sonnylazuardi@gmail.com'});
+  onLoggedIn = () => {
+    AsyncStorage.setItem('loggedIn', JSON.stringify(true));
+    this.props.dispatch(appActions.setLoggedIn(true));
+  }
+  onLoggedOut = () => {
+    AsyncStorage.setItem('loggedIn', JSON.stringify(false));
+    this.props.dispatch(appActions.setLoggedIn(false));
   }
   render() {
-    const {email, password} = this.state;
+    const {showBalloon, loggedIn} = this.state;
     return (
       <View style={styles.container}>
-        <TextInput
-          value={email}
-          placeholder={'Ganti'}
-          onChange={(event) => {
-            console.log('onchange', event.nativeEvent.text);
-            this.setState({email: event.nativeEvent.text})
-          }}
-          onKeyPress={(event) => {
-            console.log('keypress', event.nativeEvent.key);
-            this.setState({email: event.nativeEvent.key})
-          }}
-          onChangeText={(email) => {
-            console.log('email', email);
-            this.setState({email})
-          }}/>
-        <TextInput value={password} secureTextEntry={true} placeholder={'Password'} onChangeText={(password) => this.setState({password})}/>
-
-        <TouchableOpacity style={styles.button} onPress={this.onLogin}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
+        <LoginView
+          onLoggedIn={this.onLoggedIn}
+          onLoggedOut={this.onLoggedOut}
+        />
       </View>
     )
   }
 }
+
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F50057',
-    padding: 20,
-  },
-  button: {
-    padding: 15,
-    backgroundColor: '#C51162',
-  },
-  buttonText: {
-    textAlign: 'center',
-    color: '#fff',
   },
 });
 
-export default Login;
+export default connect(state => ({
+  app: state.app,
+}))(Login)

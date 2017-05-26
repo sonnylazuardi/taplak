@@ -22,9 +22,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.common.LifecycleState;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.shell.MainReactPackage;
 
 import java.util.ArrayList;
 
@@ -45,6 +49,9 @@ public class FloatingViewService extends Service {
     private RelativeLayout mDragView;
     private ImageView mCloseView;
     public static Context context;
+
+    public ReactRootView mReactRootView;
+    private ReactInstanceManager mReactInstanceManager;
 
     public FloatingViewService() {
     }
@@ -82,7 +89,20 @@ public class FloatingViewService extends Service {
         mCollapseView = (RelativeLayout) mFloatingView.findViewById(R.id.collapse_view);
         mDragView = (RelativeLayout) mFloatingView.findViewById(R.id.expanded_container);
         mCloseView = (ImageView) mFloatingView.findViewById(R.id.close_btn);
-        mCollapseView.addView(MyReactActivity.mReactRootView);
+
+        mReactRootView = new ReactRootView(this);
+        mReactInstanceManager = ReactInstanceManager.builder()
+                .setApplication(getApplication())
+                .setBundleAssetName("index.android.bundle")
+                .setJSMainModuleName("index.android")
+                .addPackage(new MainReactPackage())
+                .addPackage(new FloatingPackage())
+                .setUseDeveloperSupport(BuildConfig.DEBUG)
+                .setInitialLifecycleState(LifecycleState.RESUMED)
+                .build();
+        mReactRootView.startReactApplication(mReactInstanceManager, "App", null);
+
+        mCollapseView.addView(mReactRootView);
 
         //Add the view to the window
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);

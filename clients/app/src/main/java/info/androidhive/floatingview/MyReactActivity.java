@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.facebook.react.bridge.ReactContext;
@@ -20,8 +22,10 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.shell.MainReactPackage;
 
 public class MyReactActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler {
-    public static ReactRootView mReactRootView;
+    public ReactRootView mReactRootView;
+    private RelativeLayout mViewContainer;
     private ReactInstanceManager mReactInstanceManager;
+    private View mMainView;
     private static final int OVERLAY_PERMISSION_REQ_CODE = 2084;
 
     @Override
@@ -46,10 +50,10 @@ public class MyReactActivity extends AppCompatActivity implements DefaultHardwar
                 .setUseDeveloperSupport(BuildConfig.DEBUG)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();
-        mReactRootView.startReactApplication(mReactInstanceManager, "HelloWorld", null);
+        mReactRootView.startReactApplication(mReactInstanceManager, "Login", null);
 
-//        setContentView(mReactRootView);
         setContentView(R.layout.activity_main);
+        ((RelativeLayout) findViewById(R.id.view_container)).addView(mReactRootView);
         initializeView();
     }
 

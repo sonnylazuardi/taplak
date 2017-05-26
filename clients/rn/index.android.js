@@ -1,89 +1,61 @@
 'use strict';
 
-import React from 'react';
+import React, {Component} from 'react';
 import {
   AppRegistry,
-  StyleSheet,
   Text,
   View,
-  TouchableOpacity,
-  NativeModules,
-  NativeEventEmitter,
-  Image,
+  AsyncStorage,
 } from 'react-native';
 
-const FloatingAndroid = NativeModules.FloatingAndroid;
+import { Provider } from 'react-redux';
+import configureStore from './store/configureStore';
 
+const store = configureStore();
+
+import App from './containers/App';
 import Login from './containers/Login';
+import {connect} from 'react-redux';
+import * as appActions from './actions/AppActions';
 
-class HelloWorld extends React.Component {
-  subscription = null;
-  state = {
-    showBalloon: true,
-  }
-  componentDidMount() {
-    const floating = new NativeEventEmitter(FloatingAndroid);
-    this.subscription = floating.addListener('SHOW_BALLOON',(showBalloon) => {
-      console.log(`TEST: SHOW_BALLOON ${showBalloon}`);
-      this.setState({
-        showBalloon,
+class Wrapper extends Component {
+  componentWillMount() {
+    AsyncStorage.getItem('loggedIn')
+      .then(data => JSON.parse(data))
+      .then(loggedIn => {
+        if (loggedIn) {
+          this.props.dispatch(appActions.setLoggedIn(true));
+        }
       });
-    });
-  }
-  componentWillUnmount() {
-    this.subscription.remove();
-  }
-  toggleShowBalloon = () => {
-    const {showBalloon} = this.state;
-    this.setState({
-      showBalloon: !showBalloon,
-    });
   }
   render() {
-    const {showBalloon} = this.state;
     return (
-      <View style={styles.container}>
-        {showBalloon ?
-          <View style={styles.balloon}>
-            <Image style={styles.imageLogo} source={require('./assets/icon.png')} />
-          </View>
-          :
-          <View style={styles.box}>
-            <Login />
-          </View>}
+      <View style={{flex: 1}}>
+        {this.props.children}
       </View>
-    )
+    );
   }
 }
-var styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  hello: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  balloon: {
-    width: 80,
-    height: 80,
-    backgroundColor: '#fff',
-    borderRadius: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 2,
-  },
-  imageLogo: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-  },
-  box: {
-    flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 4,
-    elevation: 2,
-  }
-});
 
-AppRegistry.registerComponent('HelloWorld', () => HelloWorld);
+Wrapper = connect(state => ({
+  app: state.app
+}))(Wrapper);
+
+const AppWrapper = () => (
+  <Provider store={store}>
+    <Wrapper>
+      <App />
+    </Wrapper>
+  </Provider>
+);
+
+const LoginWrapper = () => (
+  <Provider store={store}>
+    <Wrapper>
+      <Login />
+    </Wrapper>
+  </Provider>
+);
+
+AppRegistry.registerComponent('App', () => AppWrapper);
+AppRegistry.registerComponent('Login', () => LoginWrapper);
