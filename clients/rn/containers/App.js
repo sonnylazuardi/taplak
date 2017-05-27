@@ -16,6 +16,7 @@ import {
 import {connect} from 'react-redux';
 import * as appActions from '../actions/AppActions';
 import Currency from '../utils/Currency';
+import Base64 from '../utils/Base64';
 
 const FloatingAndroid = NativeModules.FloatingAndroid;
 
@@ -24,7 +25,8 @@ class App extends React.Component {
   subscription2 = null;
   state = {
     showBalloon: true,
-    clipboardText: "",
+    clipboardText: "laptop",
+    price: 0,
   }
   componentDidMount() {
     const floating = new NativeEventEmitter(FloatingAndroid);
@@ -38,11 +40,14 @@ class App extends React.Component {
     this.subscription2 = floating
       .addListener('CLIPBOARD_COPY', (text) =>{
         console.log(`TEST: COPY CLIPBOARD ${text}`);
-        this.setState({
-          clipboardText:text,
-        })
+        if (!Base64.ValidURL(text)) {
+            this.setState({
+                      clipboardText:text,
+                    })
+            this.props.dispatch(appActions.fetchProducts(text));
+        }
       });
-    this.props.dispatch(appActions.fetchProducts('laptop'));
+    this.props.dispatch(appActions.fetchProducts(this.state.clipboardText));
   }
   componentWillUnmount() {
     this.subscription.remove();
@@ -122,13 +127,13 @@ class App extends React.Component {
                 })}
               </ScrollView>
             </View>
-            <TouchableNativeFeedback onPress={this.onSearch.bind(this, 'Laptop ASUS', 5000000)}>
+            <TouchableNativeFeedback onPress={this.onSearch.bind(this, this.state.clipboardText, this.state.price)}>
               <View style={[styles.row, {padding: 10}]}>
                 <View style={{flex: 1, flexDirection: 'row'}}>
-                  <Text style={styles.searchText}>Laptop ASUS</Text>
+                  <Text style={styles.searchText}>{this.state.clipboardText}</Text>
                 </View>
                 <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
-                  <Text style={styles.priceText}>{Currency.formatMoney(5000000, 0, ',', '.')}</Text>
+                  <Text style={styles.priceText}>{Currency.formatMoney(this.state.price, 0, ',', '.')}</Text>
                 </View>
               </View>
             </TouchableNativeFeedback>
