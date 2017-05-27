@@ -27,21 +27,21 @@ class App extends React.Component {
     clipboardText: "",
   }
   componentDidMount() {
-    console.log("test asd");
     const floating = new NativeEventEmitter(FloatingAndroid);
     this.subscription = floating
-    .addListener('SHOW_BALLOON',(showBalloon) => {
+    .addListener('SHOW_BALLOON', (showBalloon) => {
       console.log(`TEST: SHOW_BALLOON ${showBalloon}`);
       this.setState({
         showBalloon,
       });
     });
-    this.subscription2 = floating.addListener('CLIPBOARD_COPY', (text) =>{
-                                 console.log(`COPY: ${text}`);
-                         this.setState({
-                             clipboardText:text,
-                         })
-                     });
+    this.subscription2 = floating
+      .addListener('CLIPBOARD_COPY', (text) =>{
+        console.log(`TEST: COPY CLIPBOARD ${text}`);
+        this.setState({
+          clipboardText:text,
+        })
+      });
     this.props.dispatch(appActions.fetchProducts('laptop'));
   }
   componentWillUnmount() {
@@ -73,7 +73,7 @@ class App extends React.Component {
     Linking.openURL(url).catch(err => console.error('An error occurred', err));
   }
   onAddToCart(product) {
-    
+
   }
   render() {
     const {showBalloon} = this.state;
