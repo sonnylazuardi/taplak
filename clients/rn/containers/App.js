@@ -73,11 +73,11 @@ class App extends React.Component {
     Linking.openURL(url).catch(err => console.error('An error occurred', err));
   }
   onAddToCart(product) {
-
+    ths.props.dispatch(appActions.addToCart(product));
   }
   render() {
     const {showBalloon} = this.state;
-    const {loggedIn, products} = this.props.app;
+    const {loggedIn, products, carts} = this.props.app;
     return (
       <View style={styles.container}>
         {showBalloon ?
@@ -138,7 +138,7 @@ class App extends React.Component {
                   <TouchableNativeFeedback onPress={this.onCart}>
                     <View style={styles.buttonPrimary}>
                       <Image source={require('../assets/cart.png')} style={[styles.icon, {tintColor: '#b10045', marginLeft: 0}]} />
-                      <Text style={styles.buttonPrimaryText}>Keranjang (5)</Text>
+                      <Text style={styles.buttonPrimaryText}>Keranjang ({carts.length})</Text>
                     </View>
                   </TouchableNativeFeedback>
                 </TouchableNativeFeedback>
