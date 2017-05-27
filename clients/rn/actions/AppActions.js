@@ -68,3 +68,41 @@ export function login(username, password) {
     });
   }
 }
+
+export function translate(text) {
+    return (dispatch, getState) => {
+
+        return fetch(`https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20170527T163546Z.e211ae426f222d43.5102a116aae034b5c3faf284de3b488848a2fdce&text=${text}&lang=en`, {
+          method: 'GET',
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log('DATA', data);
+          return data;
+        });
+    }
+}
+
+
+export function apiAi(text) {
+    return (dispatch, getState) => {
+
+        return fetch("https://api.api.ai/v1/query?v=20150910", {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer cd072cca99d54c698665f1405924293e',
+            'Content-Type': 'application/json; charset=utf-8'
+          },
+          body: JSON.stringify({
+            query:text,
+            lang: 'en',
+            sessionId: '1234567890'
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log('DATA', data);
+          return data;
+        });
+    }
+}

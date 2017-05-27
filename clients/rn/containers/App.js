@@ -41,10 +41,18 @@ class App extends React.Component {
       .addListener('CLIPBOARD_COPY', (text) =>{
         console.log(`TEST: COPY CLIPBOARD ${text}`);
         if (!Base64.ValidURL(text)) {
-            this.setState({
-                      clipboardText:text,
-                    })
-            this.props.dispatch(appActions.fetchProducts(text));
+            this.props.dispatch(appActions.translate(text)).then((data) => {
+                console.log(data.text[0])
+                console.log("masuk")
+                this.props.dispatch(appActions.apiAi(data.text[0])).then((data) => {
+                console.log(data)
+                 this.setState({
+                          clipboardText:data.result.parameters.item,
+                        })
+                this.props.dispatch(appActions.fetchProducts(data.result.parameters.item));
+                });
+            });
+
         }
       });
     this.props.dispatch(appActions.fetchProducts(this.state.clipboardText));
