@@ -4,14 +4,18 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
+  TouchableNativeFeedback ,
   NativeModules,
   NativeEventEmitter,
   Image,
   AsyncStorage,
   ScrollView,
+  Linking,
+  Clipboard,
 } from 'react-native';
 import {connect} from 'react-redux';
+import * as appActions from '../actions/AppActions';
+import Currency from '../utils/Currency';
 
 const FloatingAndroid = NativeModules.FloatingAndroid;
 
@@ -28,6 +32,7 @@ class App extends React.Component {
         showBalloon,
       });
     });
+    this.props.dispatch(appActions.fetchProducts('laptop'));
   }
   componentWillUnmount() {
     this.subscription.remove();
@@ -38,9 +43,30 @@ class App extends React.Component {
       showBalloon: !showBalloon,
     });
   }
+  onOpenLink(url) {
+    Linking.openURL(url).catch(err => console.error('An error occurred', err));
+  }
+  onSearch(keyword, price) {
+    const url = `https://www.bukalapak.com/products?keywords=${keyword}%20tangan&search[price_min]=${price - 100000}&&search[price_max]=${price + 100000}`;
+    Linking.openURL(url).catch(err => console.error('An error occurred', err));
+  }
+  onCopy(url) {
+    Clipboard.setString(url);
+  }
+  onCart = () => {
+    const url = `https://www.bukalapak.com/cart/carts`;
+    Linking.openURL(url).catch(err => console.error('An error occurred', err));
+  }
+  onCheckout = () => {
+    const url = `https://www.bukalapak.com/payment/purchases/new`;
+    Linking.openURL(url).catch(err => console.error('An error occurred', err));
+  }
+  onAddToCart(product) {
+    
+  }
   render() {
     const {showBalloon} = this.state;
-    const {loggedIn} = this.props.app;
+    const {loggedIn, products} = this.props.app;
     return (
       <View style={styles.container}>
         {showBalloon ?
@@ -49,27 +75,72 @@ class App extends React.Component {
           </View>
           :
           <View style={styles.box}>
-            <Text style={styles.hello}>{loggedIn ? 'SUDAH LOGIN' : 'BELUM LOGIN'}</Text>
-            <ScrollView horizontal={true}>
-              <View style={styles.card}>
-                <Text>Produk 1</Text>
+            <Text style={styles.title}>TAPLAK</Text>
+            <View style={styles.slider}>
+              <ScrollView horizontal={true}>
+                {products.filter((product, i) => (i <= 10)).map((product, i) => {
+                  return (
+                    <View style={styles.card} key={i}>
+                      <TouchableNativeFeedback onPress={this.onOpenLink.bind(this, product.url)}>
+                        <View>
+                          <Image source={{uri: product.images[0]}} style={styles.productImage}/>
+                          <View style={styles.cardInfo}>
+                            <Text style={styles.productName} numberOfLines={2} ellipsizeMode={'tail'}>{product.name}</Text>
+                            <Text  style={styles.productPrice}>{Currency.formatMoney(product.price, 0, ',', '.')}</Text>
+                          </View>
+                        </View>
+                      </TouchableNativeFeedback>
+                      <View style={styles.actions}>
+                        <View style={{flex: 1}}>
+                          <TouchableNativeFeedback onPress={this.onCopy.bind(this, product.url)}>
+                            <View style={[styles.iconButton, {borderLeftWidth: 0}]}>
+                              <Image source={require('../assets/copy.png')} style={[styles.icon, {tintColor: '#999'}]} />
+                            </View>
+                          </TouchableNativeFeedback>
+                        </View>
+                        <View style={{flex: 1}}>
+                          <TouchableNativeFeedback onPress={this.onAddToCart.bind(this, product)}>
+                            <View style={styles.iconButton}>
+                              <Image source={require('../assets/addtocart.png')} style={[styles.icon, {tintColor: '#999'}]} />
+                            </View>
+                          </TouchableNativeFeedback>
+                        </View>
+                      </View>
+                    </View>
+                  );
+                })}
+              </ScrollView>
+            </View>
+            <TouchableNativeFeedback onPress={this.onSearch.bind(this, 'Laptop ASUS', 5000000)}>
+              <View style={[styles.row, {padding: 10}]}>
+                <View style={{flex: 1, flexDirection: 'row'}}>
+                  <Text style={styles.searchText}>Laptop ASUS</Text>
+                </View>
+                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
+                  <Text style={styles.priceText}>{Currency.formatMoney(5000000, 0, ',', '.')}</Text>
+                </View>
               </View>
-              <View style={styles.card}>
-                <Text>Produk 2</Text>
+            </TouchableNativeFeedback>
+            <View style={[styles.row, {padding: 10}]}>
+              <View style={{flex: 1, flexDirection: 'row', paddingRight: 5}}>
+                <TouchableNativeFeedback>
+                  <TouchableNativeFeedback onPress={this.onCart}>
+                    <View style={styles.buttonPrimary}>
+                      <Image source={require('../assets/cart.png')} style={[styles.icon, {tintColor: '#b10045', marginLeft: 0}]} />
+                      <Text style={styles.buttonPrimaryText}>Keranjang (5)</Text>
+                    </View>
+                  </TouchableNativeFeedback>
+                </TouchableNativeFeedback>
               </View>
-              <View style={styles.card}>
-                <Text>Produk 3</Text>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', paddingLeft: 5}}>
+                <TouchableNativeFeedback onPress={this.onCheckout}>
+                  <View style={styles.button}>
+                    <Image source={require('../assets/check.png')} style={[styles.icon, {tintColor: '#fff', marginLeft: 0}]} />
+                    <Text style={styles.buttonText}>Checkout</Text>
+                  </View>
+                </TouchableNativeFeedback>
               </View>
-              <View style={styles.card}>
-                <Text>Produk 4</Text>
-              </View>
-              <View style={styles.card}>
-                <Text>Produk 5</Text>
-              </View>
-              <View style={styles.card}>
-                <Text>Produk 6</Text>
-              </View>
-            </ScrollView>
+            </View>
           </View>}
       </View>
     )
@@ -79,11 +150,20 @@ var styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  row: {
+    flexDirection: 'row',
+  },
+  cardInfo: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+  },
   card: {
-    backgroundColor: '#ddd',
+    backgroundColor: '#fff',
     borderRadius: 4,
-    padding: 15,
     margin: 5,
+    height: 160,
+    width: 100,
+    elevation: 2,
   },
   hello: {
     fontSize: 20,
@@ -110,7 +190,87 @@ var styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 4,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
+  productImage: {
+    width: 100,
+    height: 80,
+  },
+  productName: {
+    fontWeight: '500',
+    color: '#000',
+    fontSize: 10,
+  },
+  productPrice: {
+    fontSize: 10,
+    color: '#999',
+  },
+  slider: {
+    height: 170,
+  },
+  title: {
+    color: '#000',
+    marginTop: 10,
+    marginBottom: 5,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  searchText: {
+    color: '#000',
+  },
+  priceText: {
+    color: '#999'
+  },
+  button: {
+    backgroundColor: '#b10045',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    flexDirection: 'row',
+  },
+  buttonText: {
+    color: '#fff',
+  },
+  buttonPrimary: {
+    backgroundColor: '#fff',
+    borderColor: '#b10045',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    flexDirection: 'row',
+  },
+  buttonPrimaryText: {
+    color: '#b10045',
+  },
+  icon: {
+    width: 16,
+    height: 16,
+    marginHorizontal: 8,
+  },
+  iconButton: {
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#ddd',
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+  },
+  actions: {
+    flexDirection: 'row',
+    height: 30,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  }
 });
 
 export default connect(state => ({

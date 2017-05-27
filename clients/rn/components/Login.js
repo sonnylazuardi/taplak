@@ -73,7 +73,6 @@ class Login extends React.Component {
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F50057',
     padding: 20,
   },
   button: {

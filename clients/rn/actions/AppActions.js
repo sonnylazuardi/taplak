@@ -19,8 +19,10 @@ export function fetchProducts(keyword) {
   return (dispatch, getState) => {
     return fetch(`${BASE_URL}/products.json?keywords=${keyword}`, {
       method: 'GET',
-    }).then(data => {
-      console.log('DATA', data);
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(res => res.json()).then(data => {
       dispatch(setProducts(data.products));
       return data;
     })
@@ -36,6 +38,7 @@ export function login(username, password) {
         'Authorization': 'Basic '+Base64.btoa(`${username}:${password}`),
       },
     })
+    .then(res => res.json())
     .then(data => {
       console.log('DATA', data);
       return data;

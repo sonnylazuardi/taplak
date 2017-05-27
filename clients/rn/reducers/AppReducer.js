@@ -1,5 +1,6 @@
 const initialState = {
   loggedIn: false,
+  products: [],
 }
 
 export default function app(state = initialState, action) {
