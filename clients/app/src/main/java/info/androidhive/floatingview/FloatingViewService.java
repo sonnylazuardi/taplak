@@ -2,9 +2,12 @@ package info.androidhive.floatingview;
 
 import android.app.Activity;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PixelFormat;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -49,12 +52,38 @@ public class FloatingViewService extends Service {
     private RelativeLayout mDragView;
     private ImageView mCloseView;
     public static Context context;
+    private boolean shouldShowBox = false;
 
     public ReactRootView mReactRootView;
     private ReactInstanceManager mReactInstanceManager;
 
-    public FloatingViewService() {
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals("com.mejamakan.taplak.SHOW_BOX")){
+                showBox();
+            }
+        }
+    };
+
+
+    public FloatingViewService() {}
+
+    @Override
+    public int onStartCommand (Intent intent, int flags, int startId) {
+        int result = super.onStartCommand(intent, flags, startId);
+        if (intent != null) {
+            String mode = intent.getExtras().getString("MODE");
+            Log.d("FLOATING_VIEW_SERVICE", "Service created with mode: " + mode);
+            if (mode == "BOX") {
+                showBox();
+            }
+        }
+
+        return result;
     }
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -63,6 +92,19 @@ public class FloatingViewService extends Service {
 
     public static int getDPI(int size, DisplayMetrics metrics){
         return (size * metrics.densityDpi) / DisplayMetrics.DENSITY_DEFAULT;
+    }
+
+    public void showBox() {
+        final DisplayMetrics metrics;
+        metrics = new DisplayMetrics();
+        mWindowManager.getDefaultDisplay().getMetrics(metrics);
+
+        mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(300, metrics)));
+        mDragView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(50, metrics)));
+        mDragView.setTag("box");
+        mCloseView.setVisibility(View.VISIBLE);
+        FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit("SHOW_BALLOON", false);
     }
 
     @Override
@@ -114,6 +156,10 @@ public class FloatingViewService extends Service {
         final DisplayMetrics metrics;
         metrics = new DisplayMetrics();
         mWindowManager.getDefaultDisplay().getMetrics(metrics);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.mejamakan.taplak.SHOW_BOX");
+        registerReceiver(receiver, filter);
 
         ImageView closeButtonCollapsed = (ImageView) mFloatingView.findViewById(R.id.close_btn);
         closeButtonCollapsed.setOnClickListener(new View.OnClickListener() {
@@ -186,13 +232,13 @@ public class FloatingViewService extends Service {
                 return false;
             }
         });
-
-
+        Log.d("FLOATING_VIEW_SERVICE", "onCreate done");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(receiver);
         if (mFloatingView != null) mWindowManager.removeView(mFloatingView);
     }
 }

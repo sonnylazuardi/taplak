@@ -2,7 +2,10 @@ package info.androidhive.floatingview;
 
 import android.app.Activity;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,16 +24,44 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.shell.MainReactPackage;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class MyReactActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler {
     public ReactRootView mReactRootView;
     private RelativeLayout mViewContainer;
     private ReactInstanceManager mReactInstanceManager;
     private View mMainView;
     private static final int OVERLAY_PERMISSION_REQ_CODE = 2084;
+    private boolean floatingBoxCreated = false;
+    ArrayList floatingBoxCreatingActions = new ArrayList<>(Arrays.asList(
+        "com.mejamakan.taplak.SHOW_BOX"
+    ));
+
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (floatingBoxCreatingActions.contains(action) && !floatingBoxCreated){
+                Intent createIntent = new Intent(MyReactActivity.this, FloatingViewService.class);
+                if (action == "com.mejamakan.taplak.SHOW_BOX") {
+                    createIntent.putExtra("MODE", "BOX");
+                }
+                startService(createIntent);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        IntentFilter filter = new IntentFilter();
+        for (Object action: floatingBoxCreatingActions) {
+            filter.addAction((String) action);
+        }
+        registerReceiver(receiver, filter);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
@@ -99,6 +130,7 @@ public class MyReactActivity extends AppCompatActivity implements DefaultHardwar
         if (mReactInstanceManager != null) {
             mReactInstanceManager.onHostDestroy();
         }
+        unregisterReceiver(receiver);
     }
 
     @Override

@@ -1,21 +1,22 @@
 package info.androidhive.floatingview;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.app.Service;
 import android.content.Intent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.util.Log;
+import android.webkit.URLUtil;
 
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-
-/**
- * Created by Philip on 24/5/17.
- */
 
 public class ClipboardMonitorService extends Service{
     private ClipboardManager mClipboardManager;
     private static final String TAG = "ClipboardManager";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -42,9 +43,17 @@ public class ClipboardMonitorService extends Service{
                 public void onPrimaryClipChanged() {
                     Log.d(TAG, "onPrimaryClipChanged");
                     ClipData clip = mClipboardManager.getPrimaryClip();
-                    FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                            .emit("CLIPBOARD_COPY", clip.getItemAt(0).getText().toString());
-                    System.out.println(clip.getItemAt(0).getText());
+                    if (clip.getItemAt(0).getText() != null) {
+                        String data = clip.getItemAt(0).getText().toString();
+                        FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                                .emit("CLIPBOARD_COPY", data);
+
+                        if (!URLUtil.isValidUrl(data)) {
+                            Intent broadcastIntent = new Intent();
+                            broadcastIntent.setAction("com.mejamakan.taplak.SHOW_BOX");
+                            sendBroadcast(broadcastIntent);
+                        }
+                    }
                 }
             };
 
