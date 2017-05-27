@@ -55,6 +55,7 @@ public class MyReactActivity extends AppCompatActivity implements DefaultHardwar
         setContentView(R.layout.activity_main);
         ((RelativeLayout) findViewById(R.id.view_container)).addView(mReactRootView);
         initializeView();
+        startService(new Intent(this, ClipboardMonitorService.class));
     }
 
     private void initializeView() {

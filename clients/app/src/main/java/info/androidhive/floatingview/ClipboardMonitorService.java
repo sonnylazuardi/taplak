@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.util.Log;
+
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
 /**
  * Created by Philip on 24/5/17.
  */
@@ -39,6 +42,8 @@ public class ClipboardMonitorService extends Service{
                 public void onPrimaryClipChanged() {
                     Log.d(TAG, "onPrimaryClipChanged");
                     ClipData clip = mClipboardManager.getPrimaryClip();
+                    FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                            .emit("CLIPBOARD_COPY", clip.getItemAt(0).getText().toString());
                     System.out.println(clip.getItemAt(0).getText());
                 }
             };
