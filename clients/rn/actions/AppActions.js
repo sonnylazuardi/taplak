@@ -15,6 +15,29 @@ export function setProducts(products) {
   }
 }
 
+export function setCarts(carts) {
+  return {
+    type: 'SET_CARTS',
+    data: carts,
+  }
+}
+
+export function addToCart(product) {
+  return (dispatch, getState) => {
+    return fetch(`${BASE_URL}/carts/add_product/${product.id}.json`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(res => res.json()).then(data => {
+      if (data.cart.length) {
+        dispatch(setCarts(data.cart[0].items));
+      }
+      return data;
+    });
+  }
+}
+
 export function fetchProducts(keyword) {
   return (dispatch, getState) => {
     return fetch(`${BASE_URL}/products.json?keywords=${keyword}`, {

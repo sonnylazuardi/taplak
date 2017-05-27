@@ -1,6 +1,7 @@
 const initialState = {
   loggedIn: false,
   products: [],
+  carts: [],
 }
 
 export default function app(state = initialState, action) {
@@ -14,6 +15,11 @@ export default function app(state = initialState, action) {
       return {
         ...state,
         products: action.data,
+      }
+    case 'SET_CARTS':
+      return {
+        ...state,
+        carts: action.data,
       }
     default:
       return state;
