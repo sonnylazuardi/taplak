@@ -9,6 +9,11 @@ export default function app(state = initialState, action) {
         ...state,
         loggedIn: action.data,
       }
+    case 'SET_PRODUCTS':
+      return {
+        ...state,
+        products: action.data,
+      }
     default:
       return state;
   }

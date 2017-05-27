@@ -8,6 +8,25 @@ export function setLoggedIn(loggedIn) {
   }
 }
 
+export function setProducts(products) {
+  return {
+    type: 'SET_PRODUCTS',
+    data: products,
+  }
+}
+
+export function fetchProducts(keyword) {
+  return (dispatch, getState) => {
+    return fetch(`${BASE_URL}/products.json?keywords=${keyword}`, {
+      method: 'GET',
+    }).then(data => {
+      console.log('DATA', data);
+      dispatch(setProducts(data.products));
+      return data;
+    })
+  }
+}
+
 export function login(username, password) {
   return (dispatch, getState) => {
     console.log('Basic '+Base64.btoa(`${username}:${password}`));
