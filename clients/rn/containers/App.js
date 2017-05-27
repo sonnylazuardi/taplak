@@ -21,21 +21,32 @@ const FloatingAndroid = NativeModules.FloatingAndroid;
 
 class App extends React.Component {
   subscription = null;
+  subscription2 = null;
   state = {
     showBalloon: true,
+    clipboardText: "",
   }
   componentDidMount() {
+    console.log("test asd");
     const floating = new NativeEventEmitter(FloatingAndroid);
-    this.subscription = floating.addListener('SHOW_BALLOON',(showBalloon) => {
+    this.subscription = floating
+    .addListener('SHOW_BALLOON',(showBalloon) => {
       console.log(`TEST: SHOW_BALLOON ${showBalloon}`);
       this.setState({
         showBalloon,
       });
     });
+    this.subscription2 = floating.addListener('CLIPBOARD_COPY', (text) =>{
+                                 console.log(`COPY: ${text}`);
+                         this.setState({
+                             clipboardText:text,
+                         })
+                     });
     this.props.dispatch(appActions.fetchProducts('laptop'));
   }
   componentWillUnmount() {
     this.subscription.remove();
+    this.subscription2.remove();
   }
   toggleShowBalloon = () => {
     const {showBalloon} = this.state;
