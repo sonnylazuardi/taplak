@@ -40,7 +40,7 @@
             android:layout_marginTop="10dp"
             android:src="@drawable/ic_close"
             tools:ignore="ContentDescription"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
 
         <!--View while view is expanded-->
         <!--<LinearLayout-->

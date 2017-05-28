@@ -27,6 +27,15 @@ class Wrapper extends Component {
           this.props.dispatch(appActions.setLoggedIn(true));
         }
       });
+
+    AsyncStorage.getItem('userData')
+      .then(data => JSON.parse(data))
+      .then(userData => {
+        console.log('USERDATA', userData);
+        if (userData) {
+          this.props.dispatch(appActions.setUserData(userData));
+        }
+      });
   }
   render() {
     return (

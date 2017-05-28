@@ -12,6 +12,7 @@ import {
   ScrollView,
   Linking,
   Clipboard,
+  FlatList,
 } from 'react-native';
 import {connect} from 'react-redux';
 import * as appActions from '../actions/AppActions';
@@ -31,31 +32,50 @@ class App extends React.Component {
   componentDidMount() {
     const floating = new NativeEventEmitter(FloatingAndroid);
     this.subscription = floating
-    .addListener('SHOW_BALLOON', (showBalloon) => {
-      console.log(`TEST: SHOW_BALLOON ${showBalloon}`);
-      this.setState({
-        showBalloon,
+      .addListener('SHOW_BALLOON', (showBalloon) => {
+        console.log(`TEST: SHOW_BALLOON ${showBalloon}`);
+        this.setState({
+          showBalloon,
+        });
       });
-    });
     this.subscription2 = floating
       .addListener('CLIPBOARD_COPY', (text) =>{
         console.log(`TEST: COPY CLIPBOARD ${text}`);
         if (!Base64.ValidURL(text)) {
-            this.props.dispatch(appActions.translate(text)).then((data) => {
-                console.log(data.text[0])
-                console.log("masuk")
-                this.props.dispatch(appActions.apiAi(data.text[0])).then((data) => {
-                console.log(data)
-                 this.setState({
-                          clipboardText:data.result.parameters.item,
-                        })
-                this.props.dispatch(appActions.fetchProducts(data.result.parameters.item));
-                });
+          this.props.dispatch(appActions.translate(text)).then((data) => {
+            console.log(data.text[0])
+            console.log("masuk")
+            this.props.dispatch(appActions.apiAi(data.text[0])).then((data) => {
+              console.log(data)
+              this.setState({
+                clipboardText:data.result.parameters.item,
+                price: data.result.parameters.number || 0,
+              })
+              this.props.dispatch(appActions.fetchProducts(data.result.parameters.item, this.state.price));
             });
-
+          });
         }
       });
-    this.props.dispatch(appActions.fetchProducts(this.state.clipboardText));
+    AsyncStorage.getItem('clipboard').then(data => JSON.parse(data)).then(text => {
+      if (text) {
+        if (!Base64.ValidURL(text)) {
+          this.props.dispatch(appActions.translate(text)).then((data) => {
+            this.props.dispatch(appActions.apiAi(data.text[0])).then((data) => {
+              this.setState({
+                clipboardText: data.result.parameters.item,
+                price: data.result.parameters.number || 0,
+              }, () => {
+                this.props.dispatch(appActions.fetchProducts(this.state.clipboardText, this.state.price));
+              });
+            })
+          });
+        }
+        this.setState({
+          clipboardText: text
+        });
+        this.props.dispatch(appActions.fetchCarts());
+      }
+    });
   }
   componentWillUnmount() {
     this.subscription.remove();
@@ -71,14 +91,15 @@ class App extends React.Component {
     Linking.openURL(url).catch(err => console.error('An error occurred', err));
   }
   onSearch(keyword, price) {
-    const url = `https://www.bukalapak.com/products?keywords=${keyword}%20tangan&search[price_min]=${price - 100000}&&search[price_max]=${price + 100000}`;
+    let url = `https://www.bukalapak.com/products?keywords=${keyword}`;
+    if (price != 0) url = url + `&search[price_max]=${price + 100000}`;
     Linking.openURL(url).catch(err => console.error('An error occurred', err));
   }
   onCopy(url) {
     Clipboard.setString(url);
   }
   onCart = () => {
-    const url = `https://www.bukalapak.com/cart/carts`;
+    const url = `https://www.bukalapak.com/bookmarks`;
     Linking.openURL(url).catch(err => console.error('An error occurred', err));
   }
   onCheckout = () => {
@@ -86,7 +107,7 @@ class App extends React.Component {
     Linking.openURL(url).catch(err => console.error('An error occurred', err));
   }
   onAddToCart(product) {
-    ths.props.dispatch(appActions.addToCart(product));
+    this.props.dispatch(appActions.addToCart(product));
   }
   render() {
     const {showBalloon} = this.state;
@@ -101,8 +122,8 @@ class App extends React.Component {
           <View style={styles.box}>
             <Text style={styles.title}>TAPLAK</Text>
             <View style={styles.slider}>
-              <ScrollView horizontal={true}>
-                {products.filter((product, i) => (i <= 10)).map((product, i) => {
+              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                {products.filter((product, i) => (i <= 15)).map((product, i) => {
                   return (
                     <View style={styles.card} key={i}>
                       <TouchableNativeFeedback onPress={this.onOpenLink.bind(this, product.url)}>
@@ -151,7 +172,7 @@ class App extends React.Component {
                   <TouchableNativeFeedback onPress={this.onCart}>
                     <View style={styles.buttonPrimary}>
                       <Image source={require('../assets/cart.png')} style={[styles.icon, {tintColor: '#b10045', marginLeft: 0}]} />
-                      <Text style={styles.buttonPrimaryText}>Keranjang ({carts.length})</Text>
+                      <Text style={styles.buttonPrimaryText}>Favorit ({carts.length})</Text>
                     </View>
                   </TouchableNativeFeedback>
                 </TouchableNativeFeedback>

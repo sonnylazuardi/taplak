@@ -15,6 +15,7 @@ import {
   AsyncStorage,
 } from 'react-native';
 import * as appActions from '../actions/AppActions';
+import {ToastAndroid} from 'react-native';
 
 class Login extends React.Component {
   state = {
@@ -23,23 +24,39 @@ class Login extends React.Component {
   }
   onLogin = () => {
     const {email, password} = this.state;
+    const {loggedIn, loading} = this.props.app;
     console.log('LOGIN', email, password);
-    this.props.dispatch(appActions.login(email, password)).then((result) => {
-      console.log('RESULT', result)
-    });
-    // this.props.onLoggedIn && this.props.onLoggedIn();
+    if (!loading && !loggedIn) {
+      this.props.dispatch(appActions.login(email, password)).then(userData => {
+        if (userData.status == 'OK') {
+          AsyncStorage.setItem('loggedIn', JSON.stringify(true));
+          AsyncStorage.setItem('userData', JSON.stringify(userData));
+          this.props.onLoggedIn && this.props.onLoggedIn();
+        } else {
+
+        }
+      })
+    } else {
+      ToastAndroid.show('Login sedang dalam proses. Silakan coba dalam beberapa saat lagi', ToastAndroid.SHORT);
+    }
   }
   onLogout = () => {
+    this.props.dispatch(appActions.setLoggedIn(false));
+    AsyncStorage.removeItem('loggedIn');
+    this.props.dispatch(appActions.setUserData({}));
+    AsyncStorage.removeItem('userData');
     this.props.onLoggedOut && this.props.onLoggedOut();
   }
   onLog
   render() {
     const {email, password} = this.state;
-    const {loggedIn} = this.props.app;
+    const {loggedIn, userData} = this.props.app;
     return (
       <View style={styles.container}>
         {loggedIn ?
           <View>
+            <Text>{userData.user_name}</Text>
+            <Text>{userData.email}</Text>
             <TouchableNativeFeedback onPress={this.onLogout}>
               <View style={styles.button}>
                 <Text style={styles.buttonText}>Logout</Text>

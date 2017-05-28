@@ -1,4 +1,4 @@
-package info.androidhive.floatingview;
+package info.mejamakan.floatingview;
 
 import org.junit.Test;
 

@@ -1,15 +1,12 @@
-package info.androidhive.floatingview;
+package info.mejamakan.floatingview;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -17,27 +14,15 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
-import com.facebook.react.bridge.ReactContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.shell.MainReactPackage;
-
-import java.util.ArrayList;
-
-import static android.R.id.message;
-import static android.R.id.toggle;
-import static android.content.ContentValues.TAG;
 
 
 public class FloatingViewService extends Service {
@@ -102,9 +87,7 @@ public class FloatingViewService extends Service {
         mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(300, metrics)));
         mDragView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(50, metrics)));
         mDragView.setTag("box");
-        mCloseView.setVisibility(View.VISIBLE);
-        FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit("SHOW_BALLOON", false);
+
     }
 
     @Override
@@ -167,19 +150,21 @@ public class FloatingViewService extends Service {
             public void onClick(View view) {
                 //close the service and remove the from from the window
                 if (mDragView.getTag().equals("balloon")) {
-                    mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(300, metrics)));
-                    mDragView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(50, metrics)));
-                    mDragView.setTag("box");
-                    mCloseView.setVisibility(View.VISIBLE);
-                    FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                            .emit("SHOW_BALLOON", false);
+//                    mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(300, metrics)));
+//                    mDragView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(50, metrics)));
+//                    mDragView.setTag("box");
+////                    mCloseView.setVisibility(View.VISIBLE);
+//                    FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+//                            .emit("SHOW_BALLOON", false);
+                    stopSelf();
                 } else {
                     mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(80, metrics),getDPI(80, metrics)));
                     mDragView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(80, metrics),getDPI(80, metrics)));
                     mDragView.setTag("balloon");
-                    mCloseView.setVisibility(View.GONE);
+//                    mCloseView.setVisibility(View.GONE);
                     FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                             .emit("SHOW_BALLOON", true);
+
                 }
             }
         });
@@ -214,7 +199,8 @@ public class FloatingViewService extends Service {
                         if (Xdiff < 10 && Ydiff < 10) {
                             mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(300, metrics)));
                             mDragView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(50, metrics)));
-                            mCloseView.setVisibility(View.VISIBLE);
+//                            mCloseView.setVisibility(View.VISIBLE);
+                            mDragView.setTag("box");
                             FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                                     .emit("SHOW_BALLOON", false);
                         }

@@ -1,19 +1,25 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import rootReducer from '../reducers';
 import thunk from 'redux-thunk';
+import * as storage from 'redux-storage'
+import createEngine from 'redux-storage-engine-reactnativeasyncstorage';
+const engine = createEngine('taplak');
+const reduxStorage = storage.createMiddleware(engine);
 
-export default function configureStore(initialState) {
+export default function configureStore() {
   const middlewares = [
-    thunk
+    thunk,
+    reduxStorage,
   ]
 
   const enhancers = [
     applyMiddleware(...middlewares)
   ]
 
+  const reducer = storage.reducer(rootReducer);
+
   const store = createStore(
-    rootReducer,
-    initialState,
+    reducer,
     compose(...enhancers)
   );
 
@@ -24,6 +30,9 @@ export default function configureStore(initialState) {
       store.replaceReducer(nextReducer);
     });
   }
+
+  const load = storage.createLoader(engine);
+  load(store);
 
   return store;
 }

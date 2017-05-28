@@ -1,8 +1,5 @@
-package info.androidhive.floatingview;
+package info.mejamakan.floatingview;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.app.Service;
 import android.content.Intent;
@@ -45,13 +42,14 @@ public class ClipboardMonitorService extends Service{
                     ClipData clip = mClipboardManager.getPrimaryClip();
                     if (clip.getItemAt(0).getText() != null) {
                         String data = clip.getItemAt(0).getText().toString();
-                        FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                                .emit("CLIPBOARD_COPY", data);
 
                         if (!URLUtil.isValidUrl(data)) {
                             Intent broadcastIntent = new Intent();
                             broadcastIntent.setAction("com.mejamakan.taplak.SHOW_BOX");
                             sendBroadcast(broadcastIntent);
+
+                            FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                                    .emit("CLIPBOARD_COPY", data);
                         }
                     }
                 }

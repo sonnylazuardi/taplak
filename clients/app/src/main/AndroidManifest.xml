@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="info.androidhive.floatingview">
+          package="info.mejamakan.floatingview">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,7 +19,7 @@
             <!--</intent-filter>-->
         <!--</activity>-->
         <activity
-            android:name="info.androidhive.floatingview.MyReactActivity"
+            android:name="info.mejamakan.floatingview.MyReactActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -28,11 +28,11 @@
             </intent-filter>
         </activity>
         <service
-            android:name="info.androidhive.floatingview.ClipboardMonitorService"
+            android:name="info.mejamakan.floatingview.ClipboardMonitorService"
             android:enabled="true"
             android:exported="false"/>
         <service
-            android:name="info.androidhive.floatingview.FloatingViewService"
+            android:name="info.mejamakan.floatingview.FloatingViewService"
             android:enabled="true"
             android:exported="false"/>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />

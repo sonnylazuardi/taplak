@@ -1,4 +1,4 @@
-package info.androidhive.floatingview.http;
+package info.mejamakan.floatingview.http;
 
 import java.io.IOException;
 

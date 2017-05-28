@@ -15,16 +15,29 @@ import {connect} from 'react-redux';
 import LoginView from '../components/Login';
 import * as appActions from '../actions/AppActions';
 
+const FloatingAndroid = NativeModules.FloatingAndroid;
+import Base64 from '../utils/Base64';
+
 class Login extends React.Component {
   state = {
 
   }
+  subscription2 = null;
+  componentDidMount() {
+    const floating = new NativeEventEmitter(FloatingAndroid);
+    this.subscription2 = floating
+      .addListener('CLIPBOARD_COPY', (text) => {
+        console.log(`TEST: COPY CLIPBOARD ${text}`);
+        AsyncStorage.setItem('clipboard', JSON.stringify(text));
+      });
+  }
+  componentWillUnmount() {
+    this.subscription.remove();
+  }
   onLoggedIn = () => {
-    AsyncStorage.setItem('loggedIn', JSON.stringify(true));
     this.props.dispatch(appActions.setLoggedIn(true));
   }
   onLoggedOut = () => {
-    AsyncStorage.setItem('loggedIn', JSON.stringify(false));
     this.props.dispatch(appActions.setLoggedIn(false));
   }
   render() {
