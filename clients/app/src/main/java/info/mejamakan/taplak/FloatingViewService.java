@@ -1,4 +1,4 @@
-package info.mejamakan.floatingview;
+package info.mejamakan.taplak;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -95,9 +95,7 @@ public class FloatingViewService extends Service {
         super.onCreate();
         context = this.getApplicationContext();
 
-        //Inflate the floating view layout we created
         mFloatingView = LayoutInflater.from(this).inflate(R.layout.layout_floating_widget, null);
-//        mFloatingView = LayoutInflater.from(this).inflate((RelativeLayout)MyReactActivity.mReactRootView, null);
 
         //Add the view to the window.
         final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -132,9 +130,7 @@ public class FloatingViewService extends Service {
         //Add the view to the window
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         mWindowManager.addView(mFloatingView, params);
-//        mWindowManager.addView(MyReactActivity.mReactRootView, params);
-//
-//        this.hideBalloon();
+
 
         final DisplayMetrics metrics;
         metrics = new DisplayMetrics();
@@ -150,18 +146,11 @@ public class FloatingViewService extends Service {
             public void onClick(View view) {
                 //close the service and remove the from from the window
                 if (mDragView.getTag().equals("balloon")) {
-//                    mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(300, metrics)));
-//                    mDragView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(50, metrics)));
-//                    mDragView.setTag("box");
-////                    mCloseView.setVisibility(View.VISIBLE);
-//                    FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-//                            .emit("SHOW_BALLOON", false);
                     stopSelf();
                 } else {
                     mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(80, metrics),getDPI(80, metrics)));
                     mDragView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(80, metrics),getDPI(80, metrics)));
                     mDragView.setTag("balloon");
-//                    mCloseView.setVisibility(View.GONE);
                     FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                             .emit("SHOW_BALLOON", true);
 

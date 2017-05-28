@@ -13,6 +13,7 @@ import {
   Linking,
   Clipboard,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import {connect} from 'react-redux';
 import * as appActions from '../actions/AppActions';
@@ -41,17 +42,26 @@ class App extends React.Component {
     this.subscription2 = floating
       .addListener('CLIPBOARD_COPY', (text) =>{
         console.log(`TEST: COPY CLIPBOARD ${text}`);
+        if (text != '') this.setState({clipboardText: text});
         if (!Base64.ValidURL(text)) {
+          this.props.dispatch(appActions.setLoading(true));
           this.props.dispatch(appActions.translate(text)).then((data) => {
             console.log(data.text[0])
             console.log("masuk")
             this.props.dispatch(appActions.apiAi(data.text[0])).then((data) => {
               console.log(data)
+              let clipboardText = data.result.parameters.item;
+              const price = data.result.parameters.number || 0;
+              if (!clipboardText) clipboardText = text;
+              console.log('clipboardText', clipboardText);
               this.setState({
-                clipboardText:data.result.parameters.item,
-                price: data.result.parameters.number || 0,
-              })
-              this.props.dispatch(appActions.fetchProducts(data.result.parameters.item, this.state.price));
+                clipboardText,
+                price,
+              }, () => {
+                this.props.dispatch(appActions.fetchProducts(this.state.clipboardText, this.state.price)).then(() => {
+                  this.props.dispatch(appActions.setLoading(false));
+                });
+              });
             });
           });
         }
@@ -59,20 +69,24 @@ class App extends React.Component {
     AsyncStorage.getItem('clipboard').then(data => JSON.parse(data)).then(text => {
       if (text) {
         if (!Base64.ValidURL(text)) {
+          this.props.dispatch(appActions.setLoading(true));
           this.props.dispatch(appActions.translate(text)).then((data) => {
             this.props.dispatch(appActions.apiAi(data.text[0])).then((data) => {
+              let clipboardText = data.result.parameters.item;
+              const price = data.result.parameters.number || 0;
+              if (!clipboardText) clipboardText = text;
               this.setState({
-                clipboardText: data.result.parameters.item,
-                price: data.result.parameters.number || 0,
+                clipboardText,
+                price,
               }, () => {
-                this.props.dispatch(appActions.fetchProducts(this.state.clipboardText, this.state.price));
+                this.props.dispatch(appActions.fetchProducts(this.state.clipboardText, this.state.price)).then(() => {
+                  this.props.dispatch(appActions.setLoading(false));
+                });
               });
             })
           });
         }
-        this.setState({
-          clipboardText: text
-        });
+        if (text != '') this.setState({clipboardText: text});
         this.props.dispatch(appActions.fetchCarts());
       }
     });
@@ -111,7 +125,7 @@ class App extends React.Component {
   }
   render() {
     const {showBalloon} = this.state;
-    const {loggedIn, products, carts} = this.props.app;
+    const {loggedIn, products, carts, loading} = this.props.app;
     return (
       <View style={styles.container}>
         {showBalloon ?
@@ -121,11 +135,18 @@ class App extends React.Component {
           :
           <View style={styles.box}>
             <Text style={styles.title}>TAPLAK</Text>
+            {loading ?
+              <ActivityIndicator style={{position: 'absolute', top: 10, right: 10}}/>
+              : null}
             <View style={styles.slider}>
-              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                {products.filter((product, i) => (i <= 15)).map((product, i) => {
+              <FlatList
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                data={products.map(product => ({...product, key: product.id}))}
+                renderItem={({item}) => {
+                  const product = item;
                   return (
-                    <View style={styles.card} key={i}>
+                    <View style={styles.card}>
                       <TouchableNativeFeedback onPress={this.onOpenLink.bind(this, product.url)}>
                         <View>
                           <Image source={{uri: product.images[0]}} style={styles.productImage}/>
@@ -152,9 +173,8 @@ class App extends React.Component {
                         </View>
                       </View>
                     </View>
-                  );
-                })}
-              </ScrollView>
+                  )
+                }}/>
             </View>
             <TouchableNativeFeedback onPress={this.onSearch.bind(this, this.state.clipboardText, this.state.price)}>
               <View style={[styles.row, {padding: 10}]}>

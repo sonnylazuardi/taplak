@@ -1,5 +1,6 @@
-package info.mejamakan.floatingview;
+package info.mejamakan.taplak;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,11 +9,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
@@ -23,12 +22,12 @@ import com.facebook.react.shell.MainReactPackage;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MyReactActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler {
+public class MainActivity extends Activity implements DefaultHardwareBackBtnHandler {
     public ReactRootView mReactRootView;
     private RelativeLayout mViewContainer;
     private ReactInstanceManager mReactInstanceManager;
     private View mMainView;
-    private static final int OVERLAY_PERMISSION_REQ_CODE = 2084;
+    private static final int OVERLAY_PERMISSION_REQ_CODE = 2;
     private boolean floatingBoxCreated = false;
     ArrayList floatingBoxCreatingActions = new ArrayList<>(Arrays.asList(
         "com.mejamakan.taplak.SHOW_BOX"
@@ -41,7 +40,7 @@ public class MyReactActivity extends AppCompatActivity implements DefaultHardwar
             String data = intent.getType();
 
             if (floatingBoxCreatingActions.contains(action) && !floatingBoxCreated){
-                Intent createIntent = new Intent(MyReactActivity.this, FloatingViewService.class);
+                Intent createIntent = new Intent(MainActivity.this, FloatingViewService.class);
                 if (action == "com.mejamakan.taplak.SHOW_BOX") {
                     createIntent.putExtra("MODE", "BOX");
                     createIntent.putExtra("DATA", data);
@@ -55,19 +54,27 @@ public class MyReactActivity extends AppCompatActivity implements DefaultHardwar
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+            } else {
+                this.initializePage();
+            }
+        } else {
+            this.initializePage();
+        }
+    }
+
+    private void initializePage() {
         IntentFilter filter = new IntentFilter();
         for (Object action: floatingBoxCreatingActions) {
             filter.addAction((String) action);
         }
         registerReceiver(receiver, filter);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.canDrawOverlays(this)) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
-            }
-        }
+
 
         mReactRootView = new ReactRootView(this);
         mReactInstanceManager = ReactInstanceManager.builder()
@@ -83,25 +90,8 @@ public class MyReactActivity extends AppCompatActivity implements DefaultHardwar
 
         setContentView(R.layout.activity_main);
         ((RelativeLayout) findViewById(R.id.view_container)).addView(mReactRootView);
-//        initializeView();
         startService(new Intent(this, ClipboardMonitorService.class));
     }
-
-//    private void initializeView() {
-//        findViewById(R.id.notify_me).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(MyReactActivity.this,
-//                        "Membuka balon taplak",
-//                        Toast.LENGTH_SHORT).show();
-//
-//                Intent intent = new Intent(MyReactActivity.this, FloatingViewService.class);
-//
-//                startService(intent);
-//                finish();
-//            }
-//        });
-//    }
 
     @Override
     protected void onPause() {
@@ -152,18 +142,14 @@ public class MyReactActivity extends AppCompatActivity implements DefaultHardwar
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == OVERLAY_PERMISSION_REQ_CODE) {
-
-            //Check if the permission is granted or not.
-            if (resultCode == RESULT_OK) {
-                Toast.makeText(this,
-                        "Draw over other app permission is available.",
-                        Toast.LENGTH_SHORT).show();
-            } else { //Permission is not available
-                Toast.makeText(this,
-                        "Draw over other app permission not available. Closing the application",
-                        Toast.LENGTH_SHORT).show();
-
-                finish();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.canDrawOverlays(this)) {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            Uri.parse("package:" + getPackageName()));
+                    startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+                } else {
+                    this.initializePage();
+                }
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

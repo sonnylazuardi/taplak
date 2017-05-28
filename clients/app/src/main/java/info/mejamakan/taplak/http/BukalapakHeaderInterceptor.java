@@ -1,4 +1,4 @@
-package info.mejamakan.floatingview.http;
+package info.mejamakan.taplak.http;
 
 import java.io.IOException;
 

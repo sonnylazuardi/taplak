@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="info.mejamakan.floatingview.MyReactActivity">
+    tools:context="info.mejamakan.taplak.MainActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

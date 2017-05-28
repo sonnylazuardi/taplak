@@ -13,9 +13,11 @@ import {
   Image,
   TextInput,
   AsyncStorage,
+  Linking,
 } from 'react-native';
 import * as appActions from '../actions/AppActions';
 import {ToastAndroid} from 'react-native';
+
 
 class Login extends React.Component {
   state = {
@@ -44,44 +46,70 @@ class Login extends React.Component {
     this.props.dispatch(appActions.setLoggedIn(false));
     AsyncStorage.removeItem('loggedIn');
     this.props.dispatch(appActions.setUserData({}));
+    this.props.dispatch(appActions.setUserProfile({}));
     AsyncStorage.removeItem('userData');
     this.props.onLoggedOut && this.props.onLoggedOut();
   }
-  onLog
+  componentWillReceiveProps(nextProps) {
+    if (this.props.app.userData != nextProps.app.userData) {
+      this.props.dispatch(appActions.fetchUserProfile(nextProps.app.userData));
+    }
+  }
+  onHelp = () => {
+    Linking.openURL(`http://taplak.sonnylab.com/`).catch(err => console.error('An error occurred', err));
+  }
   render() {
     const {email, password} = this.state;
-    const {loggedIn, userData} = this.props.app;
+    const {loggedIn, userData, userProfile} = this.props.app;
     return (
       <View style={styles.container}>
         {loggedIn ?
-          <View>
-            <Text>{userData.user_name}</Text>
-            <Text>{userData.email}</Text>
-            <TouchableNativeFeedback onPress={this.onLogout}>
-              <View style={styles.button}>
-                <Text style={styles.buttonText}>Logout</Text>
-              </View>
-            </TouchableNativeFeedback>
+          <View style={styles.bg}>
+            <View style={styles.headCover}>
+              <Text style={styles.title}>Halo, <Text style={{fontWeight: '500'}}>{userData.user_name}</Text></Text>
+              <Text style={styles.email}>{userData.email}</Text>
+            </View>
+            <View style={{justifyContent: 'center', alignItems: 'center', marginTop: -40}}>
+              <Image source={{uri: userProfile.avatar}} style={styles.avatar}/>
+            </View>
+            <View style={styles.actions}>
+              <TouchableNativeFeedback onPress={this.onHelp}>
+                <View style={styles.buttonPrimary}>
+                  <Text style={styles.buttonPrimaryText}>Bantuan</Text>
+                </View>
+              </TouchableNativeFeedback>
+              <TouchableNativeFeedback onPress={this.onLogout}>
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>Logout</Text>
+                </View>
+              </TouchableNativeFeedback>
+            </View>
           </View>
           :
-          <View>
-            <TextInput
-              value={email}
-              placeholder={'Email'}
-              onChangeText={(email) => {
-                this.setState({email})
-              }}/>
-            <TextInput
-              value={password}
-              secureTextEntry={true}
-              placeholder={'Password'}
-              onChangeText={(password) => this.setState({password})}/>
+          <View style={styles.bg}>
+            <View style={styles.headBar} />
+            <View style={styles.imageWrapper}>
+              <Image source={require('../assets/taplakfront.jpg')} style={styles.image} resizeMode={'cover'}/>
+            </View>
+            <View style={styles.actions}>
+              <TextInput
+                value={email}
+                placeholder={'Email'}
+                onChangeText={(email) => {
+                  this.setState({email})
+                }}/>
+              <TextInput
+                value={password}
+                secureTextEntry={true}
+                placeholder={'Password'}
+                onChangeText={(password) => this.setState({password})}/>
 
-            <TouchableNativeFeedback onPress={this.onLogin}>
-              <View style={styles.button}>
-                <Text style={styles.buttonText}>Login</Text>
-              </View>
-            </TouchableNativeFeedback>
+              <TouchableNativeFeedback onPress={this.onLogin}>
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>Login</Text>
+                </View>
+              </TouchableNativeFeedback>
+            </View>
           </View>}
       </View>
     )
@@ -90,14 +118,75 @@ class Login extends React.Component {
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+  },
+  bg: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  headBar: {
+    height: 300,
+    backgroundColor: '#cb0051',
   },
   button: {
     padding: 15,
-    backgroundColor: '#C51162',
+    backgroundColor: '#cb0051',
+    borderRadius: 4,
+  },
+  buttonPrimaryText: {
+    textAlign: 'center',
+    color: '#cb0051',
+  },
+  buttonPrimary: {
+    padding: 15,
+    backgroundColor: '#fff',
+    borderRadius: 4,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#cb0051',
   },
   buttonText: {
     textAlign: 'center',
+    color: '#fff',
+  },
+  actions: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  imageWrapper: {
+    flex: 1,
+    height: 400,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 40,
+  },
+  image: {
+    width: null,
+    height: null,
+    flex: 1,
+  },
+  headCover: {
+    backgroundColor: '#cb0051',
+    height: 140,
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#fff',
+    marginTop: 40,
+  },
+  email: {
+    textAlign: 'center',
+    fontSize: 11,
     color: '#fff',
   },
 });

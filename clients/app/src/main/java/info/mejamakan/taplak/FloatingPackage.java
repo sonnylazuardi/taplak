@@ -1,4 +1,4 @@
-package info.mejamakan.floatingview;
+package info.mejamakan.taplak;
 
 import com.facebook.react.ReactPackage;
 

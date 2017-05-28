@@ -25,6 +25,7 @@ class Login extends React.Component {
   subscription2 = null;
   componentDidMount() {
     const floating = new NativeEventEmitter(FloatingAndroid);
+    this.props.dispatch(appActions.setLoading(false));
     this.subscription2 = floating
       .addListener('CLIPBOARD_COPY', (text) => {
         console.log(`TEST: COPY CLIPBOARD ${text}`);

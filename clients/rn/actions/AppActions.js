@@ -1,6 +1,6 @@
 import Base64 from '../utils/Base64';
 const BASE_URL = `https://api.bukalapak.com/v2`;
-import {ToastAndroid} from 'react-native';
+import {ToastAndroid, AsyncStorage} from 'react-native';
 
 export function setLoggedIn(loggedIn) {
   return {
@@ -13,6 +13,13 @@ export function setUserData(userData) {
   return {
     type: 'SET_USER_DATA',
     data: userData,
+  }
+}
+
+export function setUserProfile(userProfile) {
+  return {
+    type: 'SET_USER_PROFILE',
+    data: userProfile,
   }
 }
 
@@ -34,6 +41,26 @@ export function setLoading(loading) {
   return {
     type: 'SET_LOADING',
     data: loading,
+  }
+}
+
+export function fetchUserProfile(userData) {
+  return (dispatch, getState) => {
+    if (!userData) return;
+    return fetch(`${BASE_URL}/users/${userData.user_id}/profile.json`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }).then(res => res.json()).then(data => {
+      if (data.status == 'OK') {
+        AsyncStorage.setItem('userProfile', JSON.stringify(data.user));
+        dispatch(setUserProfile(data.user))
+      } else {
+        ToastAndroid.show('Anda belum login! Silakan login terlebih dahulu', ToastAndroid.SHORT);
+      }
+      return data;
+    });
   }
 }
 
@@ -118,6 +145,7 @@ export function login(username, password) {
         dispatch(setUserData(data));
         dispatch(setLoading(false));
       } else {
+        console.log('LOGIN ERROR', data);
         ToastAndroid.show('Username atau password salah! Silakan coba dalam beberapa saat lagi.', ToastAndroid.SHORT);
         setTimeout(() => {
           dispatch(setLoading(false));

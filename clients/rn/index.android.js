@@ -36,6 +36,15 @@ class Wrapper extends Component {
           this.props.dispatch(appActions.setUserData(userData));
         }
       });
+
+      AsyncStorage.getItem('userProfile')
+        .then(data => JSON.parse(data))
+        .then(userProfile => {
+          console.log('userProfile', userProfile);
+          if (userProfile) {
+            this.props.dispatch(appActions.setUserProfile(userProfile));
+          }
+        });
   }
   render() {
     return (

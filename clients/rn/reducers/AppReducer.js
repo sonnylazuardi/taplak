@@ -4,6 +4,7 @@ const initialState = {
   carts: [],
   userData: {},
   loading: false,
+  userProfile: {},
 }
 
 export default function app(state = initialState, action) {
@@ -32,6 +33,11 @@ export default function app(state = initialState, action) {
       return {
         ...state,
         loading: action.data
+      }
+    case 'SET_USER_PROFILE':
+      return {
+        ...state,
+        userProfile: action.data,
       }
     default:
       return state;

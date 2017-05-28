@@ -1,4 +1,4 @@
-package info.mejamakan.floatingview;
+package info.mejamakan.taplak;
 
 import org.junit.Test;
 
