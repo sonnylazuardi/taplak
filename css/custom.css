@@ -1,0 +1,17 @@
+body {
+  background-color: #b40e3d;
+}
+
+.home section.main {
+  background-color: #b40e3d;
+  color: #fff;
+}
+
+.hero-screenshot:hover {
+  opacity: 0.8;
+}
+
+.primary {
+  background-color: #fff !important;
+  color: #b40e3d !important;
+}
