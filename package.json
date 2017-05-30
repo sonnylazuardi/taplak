@@ -1,0 +1,28 @@
+{
+  "name": "taplak",
+  "version": "1.0.0",
+  "description": "taplak landing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonnylazuardi/taplak.git"
+  },
+  "keywords": [
+    "taplak"
+  ],
+  "author": "sonny",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sonnylazuardi/taplak/issues"
+  },
+  "homepage": "https://github.com/sonnylazuardi/taplak#readme",
+  "dependencies": {
+    "express": "^4.15.3"
+  },
+  "engines": {
+    "node": "7.10.0"
+  }
+}
