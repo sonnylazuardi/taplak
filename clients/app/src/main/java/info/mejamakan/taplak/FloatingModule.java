@@ -19,7 +19,7 @@ public class FloatingModule extends ReactContextBaseJavaModule {
     public void show() {
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction("com.mejamakan.taplak.SHOW_BOX");
-        sendBroadcast(broadcastIntent);
+        mReactContext.sendBroadcast(broadcastIntent);
     }
 
     @ReactMethod
