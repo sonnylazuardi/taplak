@@ -5,9 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.view.KeyEvent;
 import android.view.View;
@@ -17,6 +19,7 @@ import com.facebook.react.common.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.shell.MainReactPackage;
 
 import java.util.ArrayList;
@@ -91,6 +94,43 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
         setContentView(R.layout.activity_main);
         ((RelativeLayout) findViewById(R.id.view_container)).addView(mReactRootView);
         startService(new Intent(this, ClipboardMonitorService.class));
+
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if (type.startsWith("image/")) {
+                handleSendImage(intent); // Handle single image being sent
+            }
+        }
+    }
+
+    /**
+     * URI Value
+     * @return File Path.
+     */
+    String getURIPath(Uri uriValue)
+    {
+        String[] mediaStoreProjection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uriValue, mediaStoreProjection, null, null, null);
+        if (cursor != null){
+            int colIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String colIndexString=cursor.getString(colIndex);
+            cursor.close();
+            return colIndexString;
+        }
+        return null;
+    }
+
+    void handleSendImage(Intent intent) {
+        Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        if (imageUri != null) {
+            FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit("IMAGE_SEND", getURIPath(imageUri));
+        }
+        finish();
     }
 
     @Override
