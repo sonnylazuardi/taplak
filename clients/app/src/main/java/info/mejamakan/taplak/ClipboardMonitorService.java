@@ -44,12 +44,14 @@ public class ClipboardMonitorService extends Service{
                         String data = clip.getItemAt(0).getText().toString();
 
                         if (!URLUtil.isValidUrl(data)) {
-                            Intent broadcastIntent = new Intent();
-                            broadcastIntent.setAction("com.mejamakan.taplak.SHOW_BOX");
-                            sendBroadcast(broadcastIntent);
+//                            Intent broadcastIntent = new Intent();
+//                            broadcastIntent.setAction("com.mejamakan.taplak.SHOW_BOX");
+//                            sendBroadcast(broadcastIntent);
 
-                            FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                                    .emit("CLIPBOARD_COPY", data);
+                            if (FloatingModule.mReactContext != null) {
+                                FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                                        .emit("CLIPBOARD_COPY", data);
+                            }
                         }
                     }
                 }

@@ -60,7 +60,9 @@ export function fetchUserProfile(userData) {
         ToastAndroid.show('Anda belum login! Silakan login terlebih dahulu', ToastAndroid.SHORT);
       }
       return data;
-    });
+    }).catch(err => {
+      console.log('ERROR API', err);
+    })
   }
 }
 
@@ -82,7 +84,9 @@ export function fetchCarts() {
         ToastAndroid.show('Anda belum login! Silakan login terlebih dahulu', ToastAndroid.SHORT);
       }
       return data;
-    });
+    }).catch(err => {
+      console.log('ERROR API', err);
+    })
   }
 }
 
@@ -107,7 +111,9 @@ export function addToCart(product) {
         ToastAndroid.show('Anda belum login! Silakan login terlebih dahulu', ToastAndroid.SHORT);
       }
       return data;
-    });
+    }).catch(err => {
+      console.log('ERROR API', err);
+    })
   }
 }
 
@@ -123,6 +129,8 @@ export function fetchProducts(keyword, price) {
     }).then(res => res.json()).then(data => {
       dispatch(setProducts(data.products));
       return data;
+    }).catch(err => {
+      console.log('ERROR API', err);
     })
   }
 }
@@ -152,13 +160,15 @@ export function login(username, password) {
         }, 10000);
       }
       return data;
-    });
+    }).catch(err => {
+      console.log('ERROR API', err);
+    })
   }
 }
 
-export function translate(text) {
+export function translate(text, reverse) {
     return (dispatch, getState) => {
-        return fetch(`https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20170527T163546Z.e211ae426f222d43.5102a116aae034b5c3faf284de3b488848a2fdce&text=${text}&lang=en`, {
+        return fetch(`https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20170527T163546Z.e211ae426f222d43.5102a116aae034b5c3faf284de3b488848a2fdce&text=${text}&lang=${reverse ? 'id' : 'en'}`, {
           method: 'GET',
         })
         .then(res => res.json())
@@ -193,7 +203,7 @@ export function apiAi(text) {
     }
 }
 
-export function clarifyAi(url) {
+export function clarifyAi(base64) {
     return (dispatch, getState) => {
 
         return fetch("https://api.clarifai.com/v2/models/aaa03c23b3724a16a56b629203edc62c/outputs", {
@@ -207,7 +217,7 @@ export function clarifyAi(url) {
             {
               "data": {
                 "image": {
-                  "url": url
+                  "base64": base64
                 }
               }
             }
@@ -221,5 +231,3 @@ export function clarifyAi(url) {
         });
     }
 }
-
-

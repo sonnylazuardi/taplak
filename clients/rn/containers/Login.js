@@ -30,18 +30,23 @@ class Login extends React.Component {
     this.subscription2 = floating
       .addListener('CLIPBOARD_COPY', (text) => {
         console.log(`TEST: COPY CLIPBOARD ${text}`);
-        AsyncStorage.setItem('clipboard', JSON.stringify(text));
+        AsyncStorage.setItem('clipboard', JSON.stringify(text), () => {
+          FloatingAndroid.show();
+        });
       });
     this.subscription3 = floating
-      .addListener('IMAGE_SEND', (imageUrl) => {
-        console.log(`TEST: IMAGE SEND ${imageUrl}`);
-        this.props.dispatch(appActions.clarifyAi(imageUrl)).then((data) => {
-            const clipboardText = data.outputs[0].data.concepts[0].name;
-            AsyncStorage.setItem('clipboard', JSON.stringify(clipboardText));
-        });
-        this.setState({
-          imageUrl,
-        });
+      .addListener('IMAGE_SEND', (imageBase64) => {
+          console.log(`TEST: IMAGE SEND`);
+          this.props.dispatch(appActions.clarifyAi(imageBase64)).then((data) => {
+              let imageName = data.outputs[0].data.concepts[0].name;
+              this.props.dispatch(appActions.translate(imageName, true)).then((data) => {
+                let clipboardText = data.text[0];
+                console.log('IMAGE TRANSLATE', clipboardText);
+                AsyncStorage.setItem('clipboard', JSON.stringify(clipboardText), () => {
+                  FloatingAndroid.show();
+                });
+              });
+          });
       });
   }
   componentWillUnmount() {

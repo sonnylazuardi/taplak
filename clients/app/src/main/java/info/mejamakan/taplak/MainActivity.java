@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -22,8 +25,13 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.shell.MainReactPackage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static android.R.attr.data;
 
 public class MainActivity extends Activity implements DefaultHardwareBackBtnHandler {
     public ReactRootView mReactRootView;
@@ -32,6 +40,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
     private View mMainView;
     private static final int OVERLAY_PERMISSION_REQ_CODE = 2;
     private boolean floatingBoxCreated = false;
+    private boolean isImageIntent = false;
     ArrayList floatingBoxCreatingActions = new ArrayList<>(Arrays.asList(
         "com.mejamakan.taplak.SHOW_BOX"
     ));
@@ -71,38 +80,39 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
     }
 
     private void initializePage() {
-        IntentFilter filter = new IntentFilter();
-        for (Object action: floatingBoxCreatingActions) {
-            filter.addAction((String) action);
-        }
-        registerReceiver(receiver, filter);
-
-
-
-        mReactRootView = new ReactRootView(this);
-        mReactInstanceManager = ReactInstanceManager.builder()
-                .setApplication(getApplication())
-                .setBundleAssetName("index.android.bundle")
-                .setJSMainModuleName("index.android")
-                .addPackage(new MainReactPackage())
-                .addPackage(new FloatingPackage())
-                .setUseDeveloperSupport(BuildConfig.DEBUG)
-                .setInitialLifecycleState(LifecycleState.RESUMED)
-                .build();
-        mReactRootView.startReactApplication(mReactInstanceManager, "Login", null);
-
-        setContentView(R.layout.activity_main);
-        ((RelativeLayout) findViewById(R.id.view_container)).addView(mReactRootView);
-        startService(new Intent(this, ClipboardMonitorService.class));
-
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
+            isImageIntent = true;
             if (type.startsWith("image/")) {
                 handleSendImage(intent); // Handle single image being sent
             }
+        } else {
+            isImageIntent = false;
+            IntentFilter filter = new IntentFilter();
+            for (Object actionType : floatingBoxCreatingActions) {
+                filter.addAction((String) actionType);
+            }
+            registerReceiver(receiver, filter);
+
+
+            mReactRootView = new ReactRootView(this);
+            mReactInstanceManager = ReactInstanceManager.builder()
+                    .setApplication(getApplication())
+                    .setBundleAssetName("index.android.bundle")
+                    .setJSMainModuleName("index.android")
+                    .addPackage(new MainReactPackage())
+                    .addPackage(new FloatingPackage())
+                    .setUseDeveloperSupport(BuildConfig.DEBUG)
+                    .setInitialLifecycleState(LifecycleState.RESUMED)
+                    .build();
+            mReactRootView.startReactApplication(mReactInstanceManager, "Login", null);
+
+            setContentView(R.layout.activity_main);
+            ((RelativeLayout) findViewById(R.id.view_container)).addView(mReactRootView);
+            startService(new Intent(this, ClipboardMonitorService.class));
         }
     }
 
@@ -124,13 +134,31 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
         return null;
     }
 
+    private String encodeImage(Bitmap bm)
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG,70,baos);
+        byte[] b = baos.toByteArray();
+        String encImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+        return encImage;
+    }
+
     void handleSendImage(Intent intent) {
         Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (imageUri != null) {
-            FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                    .emit("IMAGE_SEND", getURIPath(imageUri));
+            try {
+                final InputStream imageStream = this.getContentResolver().openInputStream(imageUri);
+                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                String encodedImage = encodeImage(selectedImage);
+                if (FloatingModule.mReactContext != null)
+                    FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                        .emit("IMAGE_SEND", encodedImage);
+            } catch(IOException e) {
+            }
+            finish();
         }
-        finish();
+
     }
 
     @Override
@@ -158,7 +186,9 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
         if (mReactInstanceManager != null) {
             mReactInstanceManager.onHostDestroy();
         }
-        unregisterReceiver(receiver);
+        if (!isImageIntent) {
+            unregisterReceiver(receiver);
+        }
     }
 
     @Override

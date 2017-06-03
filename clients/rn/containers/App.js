@@ -41,6 +41,7 @@ class App extends React.Component {
       });
     this.subscription2 = floating
       .addListener('CLIPBOARD_COPY', (text) =>{
+        AsyncStorage.setItem('clipboard', JSON.stringify(text));
         console.log(`TEST: COPY CLIPBOARD ${text}`);
         if (text != '') this.setState({clipboardText: text});
         if (!Base64.ValidURL(text)) {
@@ -61,12 +62,33 @@ class App extends React.Component {
                 this.props.dispatch(appActions.fetchProducts(this.state.clipboardText, this.state.price)).then(() => {
                   this.props.dispatch(appActions.setLoading(false));
                 });
+                FloatingAndroid.show();
               });
             });
           });
         }
       });
+    this.subscription3 = floating
+      .addListener('IMAGE_SEND', (imageBase64) => {
+          console.log(`TEST: IMAGE SEND`);
+          this.props.dispatch(appActions.clarifyAi(imageBase64)).then((data) => {
+              let imageName = data.outputs[0].data.concepts[0].name;
+              this.props.dispatch(appActions.translate(imageName, true)).then((data) => {
+                let clipboardText = data.text[0];
+                console.log('IMAGE TRANSLATE', clipboardText);
+                AsyncStorage.setItem('clipboard', JSON.stringify(clipboardText));
+                this.setState({clipboardText, price: null}, () => {
+                  this.props.dispatch(appActions.fetchProducts(this.state.clipboardText, this.state.price)).then(() => {
+                    this.props.dispatch(appActions.setLoading(false));
+                  });
+                  FloatingAndroid.show();
+                });
+              });
+          });
+      });
+
     AsyncStorage.getItem('clipboard').then(data => JSON.parse(data)).then(text => {
+      console.log('TEXT from ASYNC STORAGE', text);
       if (text) {
         if (!Base64.ValidURL(text)) {
           this.props.dispatch(appActions.setLoading(true));
@@ -87,13 +109,14 @@ class App extends React.Component {
           });
         }
         if (text != '') this.setState({clipboardText: text});
-        this.props.dispatch(appActions.fetchCarts());
       }
+      this.props.dispatch(appActions.fetchCarts());
     });
   }
   componentWillUnmount() {
     this.subscription.remove();
     this.subscription2.remove();
+    this.subscription3.remove();
   }
   toggleShowBalloon = () => {
     const {showBalloon} = this.state;

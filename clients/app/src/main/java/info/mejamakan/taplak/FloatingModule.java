@@ -1,6 +1,7 @@
 package info.mejamakan.taplak;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -19,7 +20,11 @@ public class FloatingModule extends ReactContextBaseJavaModule {
     public void show() {
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction("com.mejamakan.taplak.SHOW_BOX");
-        mReactContext.sendBroadcast(broadcastIntent);
+        if (mReactContext != null) {
+            mReactContext.sendBroadcast(broadcastIntent);
+        } else {
+            Log.d("TEST", "React Context is not initialized");
+        }
     }
 
     @ReactMethod
