@@ -35,6 +35,10 @@ class Login extends React.Component {
     this.subscription3 = floating
       .addListener('IMAGE_SEND', (imageUrl) => {
         console.log(`TEST: IMAGE SEND ${imageUrl}`);
+        this.props.dispatch(appActions.clarifyAi(imageUrl)).then((data) => {
+            const clipboardText = data.outputs[0].data.concepts[0].name;
+            AsyncStorage.setItem('clipboard', JSON.stringify(clipboardText));
+        });
         this.setState({
           imageUrl,
         });

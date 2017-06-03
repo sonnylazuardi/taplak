@@ -192,3 +192,34 @@ export function apiAi(text) {
         });
     }
 }
+
+export function clarifyAi(url) {
+    return (dispatch, getState) => {
+
+        return fetch("https://api.clarifai.com/v2/models/aaa03c23b3724a16a56b629203edc62c/outputs", {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer mddPWzze90Dn2kvpTvemOTY5XYCCct',
+            'Content-Type': 'application/json; charset=utf-8'
+          },
+          body: JSON.stringify({
+            "inputs": [
+            {
+              "data": {
+                "image": {
+                  "url": url
+                }
+              }
+            }
+          ]
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log('DATA', data);
+          return data;
+        });
+    }
+}
+
+
