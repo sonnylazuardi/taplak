@@ -137,6 +137,7 @@ export function addToCart(product) {
 export function fetchProducts(realKeyword, keyword, price, isConnected) {
   return (dispatch, getState) => {
     if (isConnected) {
+      console.log('using api in fetchProducts...');
       let url = `${BASE_URL}/products.json?keywords=${keyword}`;
       if (price != 0) url = url + `&price_max=${price}`;
       return fetch(url, {
@@ -152,14 +153,16 @@ export function fetchProducts(realKeyword, keyword, price, isConnected) {
         console.log('ERROR API', err);
       });
     } else {
+      console.log('using cache in fetchProducts...');
       // else, retrieve cached data from store
-      const cachedProductsData = getState().cachedProductsData && getState().cachedProductsData[realKeyword];
+      const cachedProductsData = getState().app.cachedProductsData && getState().app.cachedProductsData[realKeyword];
       if (cachedProductsData != null) {
+        console.log('cachedProducts data is', cachedProductsData.products);
         dispatch(setProducts(cachedProductsData.products));
-        return data;
+        return Promise.resolve(cachedProductsData);
       } else {
         console.log('ERROR API', 'no cache available');
-        return {};
+        return Promise.reject();
       }
     }
   }
