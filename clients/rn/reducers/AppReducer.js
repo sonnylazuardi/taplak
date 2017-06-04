@@ -39,6 +39,14 @@ export default function app(state = initialState, action) {
         ...state,
         userProfile: action.data,
       }
+    case 'CACHE_PRODUCTS_DATA':
+      return {
+        ...state,
+        cachedProductsData: {
+          ...state.cachedProductsData,
+          [action.data.keyword]: action.data.result,
+        }
+      }
     default:
       return state;
   }

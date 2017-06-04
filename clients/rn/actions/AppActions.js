@@ -1,6 +1,13 @@
 import Base64 from '../utils/Base64';
 const BASE_URL = `https://api.bukalapak.com/v2`;
-import {ToastAndroid, AsyncStorage} from 'react-native';
+import {
+  ToastAndroid,
+  AsyncStorage,
+  NetInfo,
+  NativeModules,
+} from 'react-native';
+
+const FloatingAndroid = NativeModules.FloatingAndroid;
 
 export function setLoggedIn(loggedIn) {
   return {
@@ -41,6 +48,16 @@ export function setLoading(loading) {
   return {
     type: 'SET_LOADING',
     data: loading,
+  }
+}
+
+export function cacheProductsData(keyword, result) {
+  return {
+    type: 'CACHE_PRODUCTS_DATA',
+    data: {
+      keyword,
+      result,
+    },
   }
 }
 
@@ -117,21 +134,34 @@ export function addToCart(product) {
   }
 }
 
-export function fetchProducts(keyword, price) {
+export function fetchProducts(realKeyword, keyword, price, isConnected) {
   return (dispatch, getState) => {
-    let url = `${BASE_URL}/products.json?keywords=${keyword}`;
-    if (price != 0) url = url + `&price_max=${price}`;
-    return fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then(res => res.json()).then(data => {
-      dispatch(setProducts(data.products));
-      return data;
-    }).catch(err => {
-      console.log('ERROR API', err);
-    })
+    if (isConnected) {
+      let url = `${BASE_URL}/products.json?keywords=${keyword}`;
+      if (price != 0) url = url + `&price_max=${price}`;
+      return fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(res => res.json()).then(data => {
+        dispatch(cacheProductsData(realKeyword, data));
+        dispatch(setProducts(data.products));
+        return data;
+      }).catch(err => {
+        console.log('ERROR API', err);
+      });
+    } else {
+      // else, retrieve cached data from store
+      const cachedProductsData = getState().cachedProductsData && getState().cachedProductsData[realKeyword];
+      if (cachedProductsData != null) {
+        dispatch(setProducts(cachedProductsData.products));
+        return data;
+      } else {
+        console.log('ERROR API', 'no cache available');
+        return {};
+      }
+    }
   }
 }
 
@@ -178,7 +208,6 @@ export function translate(text, reverse) {
         });
     }
 }
-
 
 export function apiAi(text) {
     return (dispatch, getState) => {

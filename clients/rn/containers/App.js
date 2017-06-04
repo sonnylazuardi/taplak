@@ -14,6 +14,7 @@ import {
   Clipboard,
   FlatList,
   ActivityIndicator,
+  NetInfo,
 } from 'react-native';
 import {connect} from 'react-redux';
 import * as appActions from '../actions/AppActions';
@@ -46,25 +47,35 @@ class App extends React.Component {
         if (text != '') this.setState({clipboardText: text});
         if (!Base64.ValidURL(text)) {
           this.props.dispatch(appActions.setLoading(true));
-          this.props.dispatch(appActions.translate(text)).then((data) => {
-            console.log(data.text[0])
-            console.log("masuk")
-            this.props.dispatch(appActions.apiAi(data.text[0])).then((data) => {
-              console.log(data)
-              let clipboardText = data.result.parameters.item;
-              const price = data.result.parameters.number || 0;
-              if (!clipboardText) clipboardText = text;
-              console.log('clipboardText', clipboardText);
-              this.setState({
-                clipboardText,
-                price,
-              }, () => {
-                this.props.dispatch(appActions.fetchProducts(this.state.clipboardText, this.state.price)).then(() => {
-                  this.props.dispatch(appActions.setLoading(false));
+          NetInfo.isConnected.fetch().then(isConnected => {
+            // apply translate + api.ai process
+            if (isConnected) {
+              this.props.dispatch(appActions.translate(text)).then((data) => {
+                console.log(data.text[0])
+                console.log("masuk")
+                this.props.dispatch(appActions.apiAi(data.text[0])).then((data) => {
+                  console.log(data)
+                  let clipboardText = data.result.parameters.item;
+                  const price = data.result.parameters.number || 0;
+                  if (!clipboardText) clipboardText = text;
+                  console.log('clipboardText', clipboardText);
+                  this.setState({
+                    clipboardText,
+                    price,
+                  }, () => {
+                    this.props.dispatch(appActions.fetchProducts(text, this.state.clipboardText, this.state.price, isConnected)).then(() => {
+                      this.props.dispatch(appActions.setLoading(false));
+                    });
+                    FloatingAndroid.show();
+                  });
                 });
-                FloatingAndroid.show();
               });
-            });
+            } else { // skip everything and trust the cache
+              this.props.dispatch(appActions.fetchProducts(text, null, null, isConnected)).then(() => {
+                this.props.dispatch(appActions.setLoading(false));
+              });
+              FloatingAndroid.show();
+            }
           });
         }
       });
