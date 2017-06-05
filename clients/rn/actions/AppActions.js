@@ -61,6 +61,19 @@ export function cacheProductsData(keyword, result) {
   }
 }
 
+export function addPendingFavourite(productId) {
+  return {
+    type: 'ADD_PENDING_FAVOURITE',
+    data: productId,
+  }
+}
+
+export function clearPendingFavourite() {
+  return {
+    type: 'CLEAR_PENDING_FAVOURITE',
+  }
+}
+
 export function fetchUserProfile(userData) {
   return (dispatch, getState) => {
     if (!userData) return;
@@ -107,30 +120,36 @@ export function fetchCarts() {
   }
 }
 
-export function addToCart(product) {
+export function addToCart(product, isConnected) {
   return (dispatch, getState) => {
     const userData = getState().app.userData;
     console.log('IDENTITY', userData);
 
-    return fetch(`${BASE_URL}/favorites/${product.id}/add.json`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Basic '+Base64.btoa(`${userData.user_id}:${userData.token}`),
-      },
-    }).then(res => res.json()).then(data => {
-      console.log('ADDTOCART RESP', data);
-      if (data.status == 'OK') {
-        // dispatch(setCarts(data.cart));
-        ToastAndroid.show('Berhasil menambahkan item ke favorit', ToastAndroid.SHORT);
-        dispatch(fetchCarts());
-      } else {
-        ToastAndroid.show('Anda belum login! Silakan login terlebih dahulu', ToastAndroid.SHORT);
-      }
-      return data;
-    }).catch(err => {
-      console.log('ERROR API', err);
-    })
+    if (isConnected) {
+      return fetch(`${BASE_URL}/favorites/${product.id}/add.json`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic '+Base64.btoa(`${userData.user_id}:${userData.token}`),
+        },
+      }).then(res => res.json()).then(data => {
+        console.log('ADDTOCART RESP', data);
+        if (data.status == 'OK') {
+          // dispatch(setCarts(data.cart));
+          ToastAndroid.show('Berhasil menambahkan item ke favorit', ToastAndroid.SHORT);
+          dispatch(fetchCarts());
+        } else {
+          ToastAndroid.show('Anda belum login! Silakan login terlebih dahulu', ToastAndroid.SHORT);
+        }
+        return data;
+      }).catch(err => {
+        console.log('ERROR API', err);
+      })
+    } else { // not connected
+      dispatch(addPendingFavourite(product.id));
+      ToastAndroid.show('Produk sudah masuk antrian favorit, menunggu koneksi internet untuk menambahkan...', ToastAndroid.SHORT);
+      return Promise.resolve();
+    }
   }
 }
 
@@ -167,6 +186,39 @@ export function fetchProducts(realKeyword, keyword, price, isConnected) {
     }
   }
 }
+
+export function executePendingFavourites() {
+  return (dispatch, getState) => {
+    const userData = getState().app.userData;
+    const pendingFavouriteIds = getState().app.pendingFavouriteIds;
+
+    if (pendingFavouriteIds && pendingFavouriteIds.length > 0) {
+      const url = `${BASE_URL}/favorites/bulk_add.json`;
+      return fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic '+Base64.btoa(`${userData.user_id}:${userData.token}`),
+        },
+        body: JSON.stringify({
+          products_id: pendingFavouriteIds,
+        })
+      }).then(res => res.json()
+      ).then(data => {
+        ToastAndroid.show('Produk dalam antrian favorit sudah berhasil ditambahkan!', ToastAndroid.SHORT);
+        dispatch(fetchCarts());
+        dispatch(clearPendingFavourite());
+        return true;
+      }).catch(err => {
+        console.log('ERROR ADD BULK FAVOURITE', err);
+        return Promise.reject(false);
+      });
+    } else {
+      return Promise.resolve(true);
+    }
+  }
+}
+
 
 export function login(username, password) {
   return (dispatch, getState) => {

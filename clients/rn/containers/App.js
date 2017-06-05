@@ -31,7 +31,22 @@ class App extends React.Component {
     clipboardText: "laptop",
     price: 0,
   }
+
+  handleConnectivityChange(isConnected) {
+    if (isConnected) {
+      if (this.props.app.pendingFavouriteIds.length > 0) {
+        console.log(`Executing pending favourites for item length: ${this.props.app.pendingFavouriteIds.length}`);
+        this.props.dispatch(appActions.executePendingFavourites());
+      }
+    }
+  }
+
   componentDidMount() {
+    // listen to network change, and if its on, try to execute pending favourits if any
+    NetInfo.isConnected.addEventListener(
+      'change',
+      this.handleConnectivityChange.bind(this),
+    );
     const floating = new NativeEventEmitter(FloatingAndroid);
     this.subscription = floating
       .addListener('SHOW_BALLOON', (showBalloon) => {
@@ -137,6 +152,10 @@ class App extends React.Component {
     });
   }
   componentWillUnmount() {
+    NetInfo.isConnected.removeEventListener(
+      'change',
+      this.handleConnectivityChange.bind(this),
+    );
     this.subscription.remove();
     this.subscription2.remove();
     this.subscription3.remove();
@@ -167,7 +186,9 @@ class App extends React.Component {
     Linking.openURL(url).catch(err => console.error('An error occurred', err));
   }
   onAddToCart(product) {
-    this.props.dispatch(appActions.addToCart(product));
+    NetInfo.isConnected.fetch().then(isConnected => {
+      this.props.dispatch(appActions.addToCart(product, isConnected));
+    });
   }
   render() {
     const {showBalloon} = this.state;
@@ -257,6 +278,7 @@ class App extends React.Component {
     )
   }
 }
+
 var styles = StyleSheet.create({
   container: {
     flex: 1,

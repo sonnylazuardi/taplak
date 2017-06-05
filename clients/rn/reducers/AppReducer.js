@@ -5,6 +5,8 @@ const initialState = {
   userData: {},
   loading: false,
   userProfile: {},
+  cachedProductsData: {},
+  pendingFavouriteIds: [],
 }
 
 export default function app(state = initialState, action) {
@@ -46,6 +48,19 @@ export default function app(state = initialState, action) {
           ...state.cachedProductsData,
           [action.data.keyword]: action.data.result,
         }
+      }
+    case 'ADD_PENDING_FAVOURITE':
+      return {
+        ...state,
+        pendingFavouriteIds: [
+          ...state.pendingFavouriteIds,
+          action.data,
+        ],
+      }
+    case 'CLEAR_PENDING_FAVOURITE':
+      return {
+        ...state,
+        pendingFavouriteIds: [],
       }
     default:
       return state;
