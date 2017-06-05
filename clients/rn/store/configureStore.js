@@ -23,7 +23,7 @@ export default function configureStore() {
     compose(...enhancers)
   );
 
-  store.subscribe(() => console.log('state', store.getState()));
+  // store.subscribe(() => console.log('state', store.getState()));
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
