@@ -6,7 +6,8 @@ const initialState = {
   loading: false,
   userProfile: {},
   cachedProductsData: {},
-  pendingFavouriteIds: [],
+  pendingAddFavouriteIds: [],
+  pendingRemoveFavouriteIds: [],
 }
 
 export default function app(state = initialState, action) {
@@ -49,18 +50,27 @@ export default function app(state = initialState, action) {
           [action.data.keyword]: action.data.result,
         }
       }
-    case 'ADD_PENDING_FAVOURITE':
+    case 'QUEUE_ADD_FAVOURITE':
       return {
         ...state,
-        pendingFavouriteIds: [
-          ...state.pendingFavouriteIds,
+        pendingAddFavouriteIds: [
+          ...state.pendingAddFavouriteIds,
+          action.data,
+        ],
+      }
+    case 'QUEUE_REMOVE_FAVOURITE':
+      return {
+        ...state,
+        pendingRemoveFavouriteIds: [
+          ...state.pendingRemoveFavouriteIds,
           action.data,
         ],
       }
     case 'CLEAR_PENDING_FAVOURITE':
       return {
         ...state,
-        pendingFavouriteIds: [],
+        pendingAddFavouriteIds: [],
+        pendingRemoveFavouriteIds: [],
       }
     default:
       return state;

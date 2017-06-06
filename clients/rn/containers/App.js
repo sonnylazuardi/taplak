@@ -34,8 +34,10 @@ class App extends React.Component {
 
   handleConnectivityChange(isConnected) {
     if (isConnected) {
-      if (this.props.app.pendingFavouriteIds.length > 0) {
-        console.log(`Executing pending favourites for item length: ${this.props.app.pendingFavouriteIds.length}`);
+      if (this.props.app.pendingAddFavouriteIds.length > 0 || 
+        this.props.app.pendingRemoveFavouriteIds.length > 0) {
+        console.log(`Executing add fav for item length: ${this.props.app.pendingAddFavouriteIds.length}, 
+        and remove fav for item length: ${this.props.app.pendingRemoveFavouriteIds.length}`);
         this.props.dispatch(appActions.executePendingFavourites());
       }
     }
@@ -212,6 +214,7 @@ class App extends React.Component {
                 data={products.map(product => ({...product, key: product.id}))}
                 renderItem={({item}) => {
                   const product = item;
+                  const isFavorited = carts.map(c => c.id).includes(product.id);
                   return (
                     <View style={styles.card}>
                       <TouchableNativeFeedback onPress={this.onOpenLink.bind(this, product.url)}>
@@ -234,7 +237,11 @@ class App extends React.Component {
                         <View style={{flex: 1}}>
                           <TouchableNativeFeedback onPress={this.onAddToCart.bind(this, product)}>
                             <View style={styles.iconButton}>
-                              <Image source={require('../assets/addtocart.png')} style={[styles.icon, {tintColor: '#999'}]} />
+                              { isFavorited ?
+                                <Image source={require('../assets/cart.png')} style={[styles.icon, {tintColor: '#999'}]} />
+                                :
+                                <Image source={require('../assets/addtocart.png')} style={[styles.icon, {tintColor: '#999'}]} />
+                              }
                             </View>
                           </TouchableNativeFeedback>
                         </View>
