@@ -14,6 +14,7 @@ import {
   TextInput,
   AsyncStorage,
   Linking,
+  ActivityIndicator,
 } from 'react-native';
 import * as appActions from '../actions/AppActions';
 import {ToastAndroid} from 'react-native';
@@ -58,9 +59,14 @@ class Login extends React.Component {
   onHelp = () => {
     Linking.openURL(`http://taplak.sonnylab.com/`).catch(err => console.error('An error occurred', err));
   }
+  componentDidMount() {
+    setTimeout(() => {
+      this.props.dispatch(appActions.setLoading(false));
+    }, 100);
+  }
   render() {
     const {email, password} = this.state;
-    const {loggedIn, userData, userProfile} = this.props.app;
+    const {loggedIn, userData, userProfile, loading} = this.props.app;
     return (
       <View style={styles.container}>
         {loggedIn ?
@@ -94,21 +100,39 @@ class Login extends React.Component {
             <View style={styles.actions}>
               <TextInput
                 value={email}
+                ref="email"
                 placeholder={'Email'}
+                returnKeyType={'next'}
+                onSubmitEditing={() => {
+                  this.refs.password.focus();
+                }}
                 onChangeText={(email) => {
                   this.setState({email})
                 }}/>
               <TextInput
+                ref="password"
                 value={password}
+                onSubmitEditing={() => {
+                  this.onLogin();
+                }}
                 secureTextEntry={true}
+                returnKeyType={'done'}
                 placeholder={'Password'}
                 onChangeText={(password) => this.setState({password})}/>
 
-              <TouchableNativeFeedback onPress={this.onLogin}>
-                <View style={styles.button}>
-                  <Text style={styles.buttonText}>Login</Text>
-                </View>
-              </TouchableNativeFeedback>
+              {!loading ?
+                <TouchableNativeFeedback>
+                  <View style={styles.button}>
+                    <Text style={styles.buttonText}>Login</Text>
+                  </View>
+                </TouchableNativeFeedback>
+                :
+                <TouchableNativeFeedback onPress={this.onLogin}>
+                  <View style={styles.button}>
+                    <ActivityIndicator />
+                  </View>
+                </TouchableNativeFeedback>}
+
             </View>
           </View>}
       </View>

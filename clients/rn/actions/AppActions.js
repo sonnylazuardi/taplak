@@ -359,7 +359,7 @@ export function clarifyAi(base64) {
         return fetch("https://api.clarifai.com/v2/models/aaa03c23b3724a16a56b629203edc62c/outputs", {
           method: 'POST',
           headers: {
-            'Authorization': 'Bearer mddPWzze90Dn2kvpTvemOTY5XYCCct',
+            'Authorization': 'Bearer NM0NCwqMgmNLbd2ABgzTTe8I5mvUNF',
             'Content-Type': 'application/json; charset=utf-8'
           },
           body: JSON.stringify({

@@ -34,9 +34,9 @@ class App extends React.Component {
 
   handleConnectivityChange(isConnected) {
     if (isConnected) {
-      if (this.props.app.pendingAddFavouriteIds.length > 0 || 
+      if (this.props.app.pendingAddFavouriteIds.length > 0 ||
         this.props.app.pendingRemoveFavouriteIds.length > 0) {
-        console.log(`Executing add fav for item length: ${this.props.app.pendingAddFavouriteIds.length}, 
+        console.log(`Executing add fav for item length: ${this.props.app.pendingAddFavouriteIds.length},
         and remove fav for item length: ${this.props.app.pendingRemoveFavouriteIds.length}`);
         this.props.dispatch(appActions.executePendingFavourites());
       }
@@ -237,11 +237,7 @@ class App extends React.Component {
                         <View style={{flex: 1}}>
                           <TouchableNativeFeedback onPress={this.onAddToCart.bind(this, product)}>
                             <View style={styles.iconButton}>
-                              { isFavorited ?
-                                <Image source={require('../assets/cart.png')} style={[styles.icon, {tintColor: '#999'}]} />
-                                :
-                                <Image source={require('../assets/addtocart.png')} style={[styles.icon, {tintColor: '#999'}]} />
-                              }
+                              <Image source={require('../assets/addtocart.png')} style={[styles.icon, {tintColor: isFavorited ? '#cb0051' : '#999'}]} />
                             </View>
                           </TouchableNativeFeedback>
                         </View>
