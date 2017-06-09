@@ -114,10 +114,6 @@ export function fetchCategories() {
 function flatCategories(categories) {
   categoriesDict = [];
     for (var i =0; i< categories.length; i++) {
-      categoriesDict.push({
-          id: categories[i].id,
-          name: categories[i].name
-      });
       // console.log(categories[i].children);
       for (var k=0; k<categories[i].children.length; k++) {
         categoriesDict.push({
