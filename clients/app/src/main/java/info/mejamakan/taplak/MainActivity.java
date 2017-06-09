@@ -156,8 +156,6 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
                 if (FloatingModule.mReactContext != null) {
                     FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                         .emit("IMAGE_SEND", encodedImage);
-                    FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                        .emit("IMAGE_SEND_PATHFILE", getURIPath(imageUri));
                 }
             } catch(IOException e) {
             }
