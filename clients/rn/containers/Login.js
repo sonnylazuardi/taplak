@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
   NativeModules,
   NativeEventEmitter,
   Image,
@@ -22,7 +21,9 @@ import Base64 from '../utils/Base64';
 class Login extends React.Component {
   state = {
     imageUrl: null,
-    isCreateProduct: true,
+    isCreateProduct: false,
+    imageBase64: '',
+    isSeller: false,
   }
   subscription2 = null;
   subscription3 = null;
@@ -39,19 +40,27 @@ class Login extends React.Component {
     this.subscription3 = floating
       .addListener('IMAGE_SEND', (imageBase64) => {
           console.log(`TEST: IMAGE SEND`);
-          this.props.dispatch(appActions.createImage(imageBase64)).then(data => {
-            // do something hereeeee!
-          });
-          this.props.dispatch(appActions.clarifyAi(imageBase64)).then((data) => {
-              let imageName = data.outputs[0].data.concepts[0].name;
-              this.props.dispatch(appActions.translate(imageName, true)).then((data) => {
-                let clipboardText = data.text[0];
-                console.log('IMAGE TRANSLATE', clipboardText);
-                AsyncStorage.setItem('clipboard', JSON.stringify(clipboardText), () => {
-                  FloatingAndroid.show();
-                });
+          const {isSeller} = this.state;
+          if (isSeller) {
+            this.props.dispatch(appActions.createImage(imageBase64)).then(data => {
+              FloatingAndroid.showMainApp();
+              this.setState({
+                isCreateProduct: true,
+                imageBase64,
               });
-          });
+            });
+          } else {
+            this.props.dispatch(appActions.clarifyAi(imageBase64)).then((data) => {
+                let imageName = data.outputs[0].data.concepts[0].name;
+                this.props.dispatch(appActions.translate(imageName, true)).then((data) => {
+                  let clipboardText = data.text[0];
+                  console.log('IMAGE TRANSLATE', clipboardText);
+                  AsyncStorage.setItem('clipboard', JSON.stringify(clipboardText), () => {
+                    FloatingAndroid.show();
+                  });
+                });
+            });
+          }
       });
       this.props.dispatch(appActions.fetchCategories())
   }
@@ -66,15 +75,16 @@ class Login extends React.Component {
     this.props.dispatch(appActions.setLoggedIn(false));
   }
   render() {
-    const {imageUrl, isCreateProduct} = this.state;
+    const {imageUrl, isCreateProduct, isSeller, imageBase64} = this.state;
     const {loggedIn} = this.props.app;
     return (
       <View style={styles.container}>
         {imageUrl ?
           <Image source={{uri: `file://${imageUrl}`}} style={styles.image}/>
           : null}
-        {loggedIn || true && isCreateProduct ?
+        {loggedIn && isCreateProduct ?
           <CreateProduct
+            imageBase64={imageBase64}
             onBack={() => {
               this.setState({
                 isCreateProduct: false,
@@ -87,6 +97,12 @@ class Login extends React.Component {
             onCreateProduct={() => {
               this.setState({
                 isCreateProduct: true,
+              });
+            }}
+            isSeller={isSeller}
+            setSeller={(isSeller) => {
+              this.setState({
+                isSeller,
               });
             }}
           />}

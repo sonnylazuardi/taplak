@@ -34,7 +34,9 @@ public class FloatingModule extends ReactContextBaseJavaModule {
         if (mReactContext != null) {
             Intent i = new Intent(mReactContext, MainActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            mReactContext.startActivity(i);
+            try {
+                getCurrentActivity().startActivity(i);
+            } catch (Exception e) {}
         } else {
             Log.d("TEST", "React Context is not initialized");
         }

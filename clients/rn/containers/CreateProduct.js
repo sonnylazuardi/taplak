@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
+  TouchableNativeFeedback,
   NativeModules,
   NativeEventEmitter,
   Image,
@@ -50,9 +50,9 @@ class CreateProduct extends React.Component {
       <View style={styles.container}>
         <View style={styles.toolbar}>
           <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 15}}>
-            <TouchableOpacity onPress={this.onBack} style={{marginRight: 15}}>
+            <TouchableNativeFeedback onPress={this.onBack} style={{marginRight: 15}}>
               <Image source={require('../assets/arrowback.png')} style={{width: 28, height: 28}} tintColor={'#fff'}/>
-            </TouchableOpacity>
+            </TouchableNativeFeedback>
             <Text style={styles.title}>Tambah Product</Text>
           </View>
         </View>
@@ -130,13 +130,14 @@ class CreateProduct extends React.Component {
               })}
             </Picker>
           </View>
-          <TouchableOpacity onPress={this.onCreateProduct}>
+          <Image style={{width: 100, height: 100}} source={{uri: `data:image/png;base64,${this.props.imageBase64}`}} />
+          <TouchableNativeFeedback onPress={this.onCreateProduct}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>
                 Buat Produk
               </Text>
             </View>
-          </TouchableOpacity>
+          </TouchableNativeFeedback>
         </ScrollView>
       </View>
     )

@@ -15,6 +15,7 @@ import {
   AsyncStorage,
   Linking,
   ActivityIndicator,
+  Switch
 } from 'react-native';
 import * as appActions from '../actions/AppActions';
 import {ToastAndroid} from 'react-native';
@@ -82,6 +83,12 @@ class Login extends React.Component {
               <Image source={{uri: userProfile.avatar}} style={styles.avatar}/>
             </View>
             <View style={styles.actions}>
+              <View style={{flexDirection: 'row', justifyContent: 'center', marginBottom: 15, alignItems: 'center'}}>
+                <Switch value={this.props.isSeller} onValueChange={(value) => {
+                  this.props.setSeller && this.props.setSeller(value);
+                }} />
+                <Text style={{marginLeft: 10}}>Mode Penjual</Text>
+              </View>
               <TouchableNativeFeedback onPress={this.onHelp}>
                 <View style={styles.buttonPrimary}>
                   <Text style={styles.buttonPrimaryText}>Bantuan</Text>
