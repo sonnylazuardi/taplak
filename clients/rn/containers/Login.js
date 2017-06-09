@@ -48,6 +48,7 @@ class Login extends React.Component {
               });
           });
       });
+      this.props.dispatch(appActions.fetchCategories())
   }
   componentWillUnmount() {
     this.subscription2.remove();
@@ -61,7 +62,6 @@ class Login extends React.Component {
   }
   render() {
     const {imageUrl} = this.state;
-    this.props.dispatch(appActions.fetchCategories())
     return (
       <View style={styles.container}>
         {imageUrl ?

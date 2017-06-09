@@ -118,7 +118,8 @@ function flatCategories(categories) {
           id: categories[i].id,
           name: categories[i].name
       });
-      for (var k=0; k<categories[i].children; k++) {
+      // console.log(categories[i].children);
+      for (var k=0; k<categories[i].children.length; k++) {
         categoriesDict.push({
           id: categories[i].children[k].id,
           name: categories[i].children[k].name
