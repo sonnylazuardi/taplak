@@ -90,16 +90,19 @@ export function setImageId(id) {
   }
 }
 
-export function createImage(imagePath) {
+export function createImage(imageBase64) {
   return (dispatch, getState) => {
-    RNFetchBlob.fetch('POST', 'https://api.bukalapak.com/v2/images.json', {
+    const userData = getState().app.userData;
+    console.log('CREATE IMAGE USER DATA', userData);
+    return RNFetchBlob.fetch('POST', 'https://api.bukalapak.com/v2/images.json', {
       'Authorization': 'Basic '+Base64.btoa(`${userData.user_id}:${userData.token}`),
+      'Content-Type' : 'multipart/form-data',
     }, [
-      { name : 'file', data : RNFetchBlob.wrap(imagePath)},
-    ]).then(data => {
+      { name : 'file', filename : 'avatar-png.png', type:'image/png', data: imageBase64 },
+    ]).then(response => {
+      var data = JSON.parse(response.data);
       if (data.status == 'OK') {
         dispatch(setImageId(data.id));
-        ToastAndroid.show(`Upload berhasil. Image ID: ${data.id}`, ToastAndroid.SHORT);
       } else {
         ToastAndroid.show(`Gagal upload gambar: ${data.message}`, ToastAndroid.SHORT);
       }
