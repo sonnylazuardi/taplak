@@ -61,6 +61,7 @@ class Login extends React.Component {
   }
   render() {
     const {imageUrl} = this.state;
+    this.props.dispatch(appActions.fetchCategories())
     return (
       <View style={styles.container}>
         {imageUrl ?

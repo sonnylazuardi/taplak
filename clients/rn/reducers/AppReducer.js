@@ -2,6 +2,7 @@ const initialState = {
   loggedIn: false,
   products: [],
   carts: [],
+  categories: [],
   userData: {},
   loading: false,
   userProfile: {},
@@ -71,6 +72,11 @@ export default function app(state = initialState, action) {
         ...state,
         pendingAddFavouriteIds: [],
         pendingRemoveFavouriteIds: [],
+      }
+    case 'CACHE_CATEGORIES_DATA':
+      return {
+        ...state,
+        categories: action.data
       }
     default:
       return state;

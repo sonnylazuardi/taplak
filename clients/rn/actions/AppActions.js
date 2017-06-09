@@ -81,6 +81,54 @@ export function clearPendingFavourite() {
   }
 }
 
+export function storeCategories(categories) {
+  return {
+    type: 'CACHE_CATEGORIES_DATA',
+    data: categories
+  }
+}
+
+export function fetchCategories() {
+  return (dispatch, getState) => {
+    const userData = getState().app.userData;
+    console.log('IDENTITY', userData);
+
+    return fetch(`${BASE_URL}/categories.json`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }).then(res => res.json()).then(data => {
+      if (data.status == 'OK') {
+        dispatch(storeCategories(flatCategories(data.categories)))
+      } else {
+        ToastAndroid.show('Anda belum login! Silakan login terlebih dahulu', ToastAndroid.SHORT);
+      }
+      return data;
+    }).catch(err => {
+      console.log('ERROR API', err);
+    })
+  }
+}
+
+function flatCategories(categories) {
+  categoriesDict = [];
+    for (var i =0; i< categories.length; i++) {
+      categoriesDict.push({
+          id: categories[i].id,
+          name: categories[i].name
+      });
+      for (var k=0; k<categories[i].children; k++) {
+        categoriesDict.push({
+          id: categories[i].children[k].id,
+          name: categories[i].children[k].name
+        });
+      }
+    }
+    console.log(categoriesDict);
+  return categoriesDict;
+}
+
 export function fetchUserProfile(userData) {
   return (dispatch, getState) => {
     if (!userData) return;
