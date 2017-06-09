@@ -1,4 +1,6 @@
 import Base64 from '../utils/Base64';
+import RNFetchBlob from 'react-native-fetch-blob'
+
 const BASE_URL = `https://api.bukalapak.com/v2`;
 import {
   ToastAndroid,
@@ -78,6 +80,33 @@ export function queueRemoveFavourite(productId) {
 export function clearPendingFavourite() {
   return {
     type: 'CLEAR_PENDING_FAVOURITE',
+  }
+}
+
+export function setImageId(id) {
+  return {
+    type: 'SET_IMAGE_ID',
+    data: id,
+  }
+}
+
+export function createImage(imagePath) {
+  return (dispatch, getState) => {
+    RNFetchBlob.fetch('POST', 'https://api.bukalapak.com/v2/images.json', {
+      'Authorization': 'Basic '+Base64.btoa(`${userData.user_id}:${userData.token}`),
+    }, [
+      { name : 'file', data : RNFetchBlob.wrap(imagePath)},
+    ]).then(data => {
+      if (data.status == 'OK') {
+        dispatch(setImageId(data.id));
+        ToastAndroid.show(`Upload berhasil. Image ID: ${data.id}`, ToastAndroid.SHORT);
+      } else {
+        ToastAndroid.show(`Gagal upload gambar: ${data.message}`, ToastAndroid.SHORT);
+      }
+      return data;
+    }).catch(err => {
+      console.log('ERROR API', err);
+    });
   }
 }
 
