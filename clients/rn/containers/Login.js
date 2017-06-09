@@ -13,6 +13,7 @@ import {
 import {connect} from 'react-redux';
 
 import LoginView from '../components/Login';
+import CreateProduct from './CreateProduct';
 import * as appActions from '../actions/AppActions';
 
 const FloatingAndroid = NativeModules.FloatingAndroid;
@@ -20,7 +21,8 @@ import Base64 from '../utils/Base64';
 
 class Login extends React.Component {
   state = {
-    imageUrl: null
+    imageUrl: null,
+    isCreateProduct: true,
   }
   subscription2 = null;
   subscription3 = null;
@@ -48,7 +50,7 @@ class Login extends React.Component {
               });
           });
       });
-      // this.props.dispatch(appActions.fetchCategories())
+      this.props.dispatch(appActions.fetchCategories())
   }
   componentWillUnmount() {
     this.subscription2.remove();
@@ -61,16 +63,30 @@ class Login extends React.Component {
     this.props.dispatch(appActions.setLoggedIn(false));
   }
   render() {
-    const {imageUrl} = this.state;
+    const {imageUrl, isCreateProduct} = this.state;
+    const {loggedIn} = this.props.app;
     return (
       <View style={styles.container}>
         {imageUrl ?
           <Image source={{uri: `file://${imageUrl}`}} style={styles.image}/>
           : null}
-        <LoginView
-          onLoggedIn={this.onLoggedIn}
-          onLoggedOut={this.onLoggedOut}
-        />
+        {loggedIn || true && isCreateProduct ?
+          <CreateProduct
+            onBack={() => {
+              this.setState({
+                isCreateProduct: false,
+              });
+            }}/>
+          :
+          <LoginView
+            onLoggedIn={this.onLoggedIn}
+            onLoggedOut={this.onLoggedOut}
+            onCreateProduct={() => {
+              this.setState({
+                isCreateProduct: true,
+              });
+            }}
+          />}
       </View>
     )
   }

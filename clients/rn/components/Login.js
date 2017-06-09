@@ -59,6 +59,9 @@ class Login extends React.Component {
   onHelp = () => {
     Linking.openURL(`http://taplak.sonnylab.com/`).catch(err => console.error('An error occurred', err));
   }
+  onCreateProduct = () => {
+    this.props.onCreateProduct && this.props.onCreateProduct();
+  }
   componentDidMount() {
     setTimeout(() => {
       this.props.dispatch(appActions.setLoading(false));
@@ -82,6 +85,11 @@ class Login extends React.Component {
               <TouchableNativeFeedback onPress={this.onHelp}>
                 <View style={styles.buttonPrimary}>
                   <Text style={styles.buttonPrimaryText}>Bantuan</Text>
+                </View>
+              </TouchableNativeFeedback>
+              <TouchableNativeFeedback onPress={this.onCreateProduct}>
+                <View style={styles.buttonPrimary}>
+                  <Text style={styles.buttonPrimaryText}>Tambah Produk</Text>
                 </View>
               </TouchableNativeFeedback>
               <TouchableNativeFeedback onPress={this.onLogout}>
