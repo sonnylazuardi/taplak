@@ -118,12 +118,6 @@ class App extends React.Component {
               });
           });
       });
-    this.subscription4 = floating
-      .addListener('IMAGE_SEND_PATHFILE', (imagePath) => {
-        this.props.dispatch(appActions.createImage(imagePath)).then(data => {
-          // do something hereeeee!
-        });
-      })
 
     AsyncStorage.getItem('clipboard').then(data => JSON.parse(data)).then(text => {
       console.log('TEXT from ASYNC STORAGE', text);
