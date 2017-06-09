@@ -151,7 +151,6 @@ function flatCategories(categories) {
         });
       }
     }
-    console.log(categoriesDict);
   return categoriesDict;
 }
 
@@ -454,4 +453,32 @@ export function clarifyAi(base64) {
           return data;
         });
     }
+}
+
+export function addProducts(product) {
+  return (dispatch, getState) => {
+    const userData = getState().app.userData;
+    console.log('IDENTITY', userData);
+    dispatch(setLoading(true));
+    return fetch(`${BASE_URL}/products.json`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic '+Base64.btoa(`${userData.user_id}:${userData.token}`),
+      },
+      body: JSON.stringify(product)
+    }).then(res => res.json()).then(data => {
+      dispatch(setLoading(false));
+      if (data.status == 'OK') {
+        ToastAndroid.show('Produk berhasil dibuat', ToastAndroid.SHORT);
+        return true;
+      } else {
+        console.log('RESULT >>>', data);
+        ToastAndroid.show(data.message, ToastAndroid.SHORT);
+        return false;
+      }
+    }).catch(err => {
+      console.log('ERROR API', err);
+    })
+  }
 }

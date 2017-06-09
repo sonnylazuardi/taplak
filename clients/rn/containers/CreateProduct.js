@@ -7,6 +7,7 @@ import {
   TouchableNativeFeedback,
   NativeModules,
   NativeEventEmitter,
+  ActivityIndicator,
   Image,
   AsyncStorage,
   ScrollView,
@@ -24,15 +25,40 @@ class CreateProduct extends React.Component {
     stock: '',
     weight: '',
     description_bb: '',
+    category_id: '',
+    images: this.props.app.imageId,
   }
   componentDidMount() {
 
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.app.imageId != nextProps.app.imageId) {
+      this.setState({
+        images: nextProps.app.imageId,
+      });
+    }
   }
   onBack = () => {
     this.props.onBack && this.props.onBack();
   }
   onCreateProduct = () => {
-
+    const {category_id, name, price, weight, stock, description_bb, images} = this.state;
+    const product = {
+      "product": {
+        "category_id": category_id,
+        "name": name,
+        "price": price,
+        "weight": weight,
+        "stock": stock,
+        "description_bb": description_bb,
+      },
+      "images": images,
+    }
+    this.props.dispatch(appActions.addProducts(product)).then(result => {
+      if (result) {
+        this.props.onBack && this.props.onBack();
+      }
+    })
   }
   render() {
     const {imageUrl} = this.state;
@@ -42,18 +68,20 @@ class CreateProduct extends React.Component {
       stock,
       weight,
       description_bb,
+      category_id
     } = this.state;
     const {
-      categories
+      categories,
+      loading,
     } = this.props.app;
     return (
       <View style={styles.container}>
         <View style={styles.toolbar}>
           <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 15}}>
-            <TouchableNativeFeedback onPress={this.onBack} style={{marginRight: 15}}>
+            <TouchableNativeFeedback onPress={this.onBack}>
               <Image source={require('../assets/arrowback.png')} style={{width: 28, height: 28}} tintColor={'#fff'}/>
             </TouchableNativeFeedback>
-            <Text style={styles.title}>Tambah Product</Text>
+            <Text style={[styles.title, {marginLeft: 15}]}>Tambah Produk</Text>
           </View>
         </View>
         <ScrollView contentContainerStyle={styles.body}>
@@ -121,8 +149,10 @@ class CreateProduct extends React.Component {
             <Text style={{marginRight: 15}}>Kategori</Text>
             <Picker
               style={{width: 200, height: 60}}
-              selectedValue={categories[0] && categories[0].id}
-              onValueChange={(itemValue, itemIndex) => this.setState({category_id: itemValue})}>
+              selectedValue={category_id}
+              onValueChange={(itemValue, itemIndex) => {
+                this.setState({category_id: itemValue})
+              }}>
               {categories.map((category, i) => {
                 return (
                   <Picker.Item key={i} label={category.name} value={category.id} />
@@ -131,11 +161,14 @@ class CreateProduct extends React.Component {
             </Picker>
           </View>
           <Image style={{width: 100, height: 100}} source={{uri: `data:image/png;base64,${this.props.imageBase64}`}} />
-          <TouchableNativeFeedback onPress={this.onCreateProduct}>
+          <TouchableNativeFeedback onPress={loading ? () => {} : this.onCreateProduct}>
             <View style={styles.button}>
-              <Text style={styles.buttonText}>
-                Buat Produk
-              </Text>
+              {loading ?
+                <ActivityIndicator />
+                :
+                <Text style={styles.buttonText}>
+                  Buat Produk
+                </Text>}
             </View>
           </TouchableNativeFeedback>
         </ScrollView>
