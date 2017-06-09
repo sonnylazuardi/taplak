@@ -48,7 +48,7 @@ class Login extends React.Component {
               });
           });
       });
-      this.props.dispatch(appActions.fetchCategories())
+      // this.props.dispatch(appActions.fetchCategories())
   }
   componentWillUnmount() {
     this.subscription2.remove();
