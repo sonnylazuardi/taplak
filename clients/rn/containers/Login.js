@@ -109,6 +109,22 @@ class Login extends React.Component {
       </View>
     )
   }
+  addProduct = ({categoryId, name, isNew, price, isNegotiable, weight, stock, description, images}) => {
+    const product = {
+        "product": {
+                "category_id": categoryId,
+                "name": name,
+                "new": isNew,
+                "price": price,
+                "negotiable": isNegotiable,
+                "weight": weight,
+                "stock": stock,
+                "description_bb": description,
+              },
+              "images": images,
+    }
+    this.props.dispatch(appActions.addProducts(product));
+  }
 }
 
 var styles = StyleSheet.create({
