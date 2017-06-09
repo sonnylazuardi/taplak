@@ -426,3 +426,28 @@ export function clarifyAi(base64) {
         });
     }
 }
+
+export function addProducts(product) {
+  return (dispatch, getState) => {
+    const userData = getState().app.userData;
+    console.log('IDENTITY', userData);
+
+    return fetch(`${BASE_URL}/products.json`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic '+Base64.btoa(`${userData.user_id}:${userData.token}`),
+      },
+      body: JSON.stringify(product)
+    }).then(res => res.json()).then(data => {
+      if (data.status == 'OK') {
+
+      } else {
+        ToastAndroid.show('Anda belum login! Silakan login terlebih dahulu', ToastAndroid.SHORT);
+      }
+      return data;
+    }).catch(err => {
+      console.log('ERROR API', err);
+    })
+  }
+}
