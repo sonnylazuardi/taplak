@@ -73,6 +73,11 @@ export default function app(state = initialState, action) {
         pendingAddFavouriteIds: [],
         pendingRemoveFavouriteIds: [],
       }
+    case 'SET_IMAGE_ID':
+      return {
+        ...state,
+        imageId: action.data,
+      }
     case 'CACHE_CATEGORIES_DATA':
       return {
         ...state,

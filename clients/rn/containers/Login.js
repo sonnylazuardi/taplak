@@ -39,6 +39,9 @@ class Login extends React.Component {
     this.subscription3 = floating
       .addListener('IMAGE_SEND', (imageBase64) => {
           console.log(`TEST: IMAGE SEND`);
+          this.props.dispatch(appActions.createImage(imageBase64)).then(data => {
+            // do something hereeeee!
+          });
           this.props.dispatch(appActions.clarifyAi(imageBase64)).then((data) => {
               let imageName = data.outputs[0].data.concepts[0].name;
               this.props.dispatch(appActions.translate(imageName, true)).then((data) => {

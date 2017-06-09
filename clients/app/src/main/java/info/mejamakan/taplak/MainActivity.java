@@ -24,6 +24,7 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.shell.MainReactPackage;
+import com.RNFetchBlob.RNFetchBlobPackage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -105,6 +106,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
                     .setJSMainModuleName("index.android")
                     .addPackage(new MainReactPackage())
                     .addPackage(new FloatingPackage())
+                    .addPackage(new RNFetchBlobPackage())
                     .setUseDeveloperSupport(BuildConfig.DEBUG)
                     .setInitialLifecycleState(LifecycleState.RESUMED)
                     .build();
@@ -151,9 +153,10 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
                 final InputStream imageStream = this.getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                 String encodedImage = encodeImage(selectedImage);
-                if (FloatingModule.mReactContext != null)
+                if (FloatingModule.mReactContext != null) {
                     FloatingModule.mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                         .emit("IMAGE_SEND", encodedImage);
+                }
             } catch(IOException e) {
             }
             finish();
