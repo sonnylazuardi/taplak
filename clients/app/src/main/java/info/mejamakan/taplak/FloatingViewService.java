@@ -17,18 +17,24 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.content.Intent;
 
 import com.RNFetchBlob.RNFetchBlobPackage;
+import com.facebook.CallbackManager;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.shell.MainReactPackage;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
+
+import io.callstack.react.fbads.FBAdsPackage;
 
 
 public class FloatingViewService extends Service {
 
     private WindowManager mWindowManager;
+    CallbackManager mCallbackManager;
     private View mFloatingView;
 
     RecyclerView myRecyclerView;
@@ -85,7 +91,7 @@ public class FloatingViewService extends Service {
         metrics = new DisplayMetrics();
         mWindowManager.getDefaultDisplay().getMetrics(metrics);
 
-        mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(300, metrics)));
+        mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(360, metrics)));
         mDragView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(50, metrics)));
         mDragView.setTag("box");
 
@@ -122,6 +128,8 @@ public class FloatingViewService extends Service {
                 .addPackage(new MainReactPackage())
                 .addPackage(new FloatingPackage())
                 .addPackage(new RNFetchBlobPackage())
+                .addPackage(new FBSDKPackage(mCallbackManager))
+                .addPackage(new FBAdsPackage())
                 .setUseDeveloperSupport(BuildConfig.DEBUG)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();
@@ -189,7 +197,7 @@ public class FloatingViewService extends Service {
                         //The check for Xdiff <10 && YDiff< 10 because sometime elements moves a little while clicking.
                         //So that is click event.
                         if (Xdiff < 10 && Ydiff < 10) {
-                            mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(300, metrics)));
+                            mCollapseView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(360, metrics)));
                             mDragView.setLayoutParams(new RelativeLayout.LayoutParams(getDPI(300, metrics),getDPI(50, metrics)));
 //                            mCloseView.setVisibility(View.VISIBLE);
                             mDragView.setTag("box");

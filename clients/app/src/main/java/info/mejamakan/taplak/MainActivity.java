@@ -25,6 +25,11 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.shell.MainReactPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
+import com.facebook.appevents.AppEventsLogger;
+import io.callstack.react.fbads.FBAdsPackage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,6 +47,11 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
     private static final int OVERLAY_PERMISSION_REQ_CODE = 2;
     private boolean floatingBoxCreated = false;
     private boolean isImageIntent = false;
+    private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
+
+    protected static CallbackManager getCallbackManager() {
+        return mCallbackManager;
+    }
     ArrayList floatingBoxCreatingActions = new ArrayList<>(Arrays.asList(
         "com.mejamakan.taplak.SHOW_BOX"
     ));
@@ -66,6 +76,9 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        // If you want to use AppEventsLogger to log events.
+        AppEventsLogger.activateApp(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
@@ -107,6 +120,8 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
                     .addPackage(new MainReactPackage())
                     .addPackage(new FloatingPackage())
                     .addPackage(new RNFetchBlobPackage())
+                    .addPackage(new FBSDKPackage(mCallbackManager))
+                    .addPackage(new FBAdsPackage())
                     .setUseDeveloperSupport(BuildConfig.DEBUG)
                     .setInitialLifecycleState(LifecycleState.RESUMED)
                     .build();
@@ -226,6 +241,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
+            mCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 

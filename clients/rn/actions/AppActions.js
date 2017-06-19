@@ -378,7 +378,7 @@ export function login(username, password) {
         dispatch(setLoading(false));
       } else {
         console.log('LOGIN ERROR', data);
-        ToastAndroid.show('Username atau password salah! Silakan coba dalam beberapa saat lagi.', ToastAndroid.SHORT);
+        ToastAndroid.show(data.message, ToastAndroid.SHORT);
         setTimeout(() => {
           dispatch(setLoading(false));
         }, 10000);

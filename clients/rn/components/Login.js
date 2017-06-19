@@ -19,7 +19,8 @@ import {
 } from 'react-native';
 import * as appActions from '../actions/AppActions';
 import {ToastAndroid} from 'react-native';
-
+import { InterstitialAdManager } from 'react-native-fbads';
+const ADS_PLACEMENT_ID = '761418297363233_761448434026886';
 
 class Login extends React.Component {
   state = {
@@ -32,6 +33,9 @@ class Login extends React.Component {
     console.log('LOGIN', email, password);
     if (!loading && !loggedIn) {
       this.props.dispatch(appActions.login(email, password)).then(userData => {
+        InterstitialAdManager.showAd(ADS_PLACEMENT_ID)
+          .then(didClick => {})
+          .catch(error => {});
         if (userData.status == 'OK') {
           AsyncStorage.setItem('loggedIn', JSON.stringify(true));
           AsyncStorage.setItem('userData', JSON.stringify(userData));
@@ -41,6 +45,9 @@ class Login extends React.Component {
         }
       })
     } else {
+      InterstitialAdManager.showAd(ADS_PLACEMENT_ID)
+        .then(didClick => {})
+        .catch(error => {});
       ToastAndroid.show('Login sedang dalam proses. Silakan coba dalam beberapa saat lagi', ToastAndroid.SHORT);
     }
   }
@@ -110,7 +117,7 @@ class Login extends React.Component {
           <View style={styles.bg}>
             <View style={styles.headBar} />
             <View style={styles.imageWrapper}>
-              <Image source={require('../assets/taplakfront.jpg')} style={styles.image} resizeMode={'cover'}/>
+              <Image source={require('../assets/taplakfront.png')} style={styles.image} resizeMode={'cover'}/>
             </View>
             <View style={styles.actions}>
               <TextInput

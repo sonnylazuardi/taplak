@@ -1,3 +1,7 @@
 include ':app'
 include ':react-native-fetch-blob'
 project(':react-native-fetch-blob').projectDir = new File(rootProject.projectDir, 'rn/node_modules/react-native-fetch-blob/android')
+include ':react-native-fbsdk'
+project(':react-native-fbsdk').projectDir = new File(rootProject.projectDir, 'rn/node_modules/react-native-fbsdk/android')
+include ':react-native-fbads'
+project(':react-native-fbads').projectDir = new File(rootProject.projectDir, 'rn/node_modules/react-native-fbads/src/android')

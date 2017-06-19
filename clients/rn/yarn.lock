@@ -1210,6 +1210,10 @@ event-target-shim@^1.0.5:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/event-target-shim/-/event-target-shim-1.1.1.tgz#a86e5ee6bdaa16054475da797ccddf0c55698491"
 
+eventemitter3@^2.0.2:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-2.0.3.tgz#b5e1079b59fb5e1ba2771c0a993be060a58c99ba"
+
 exec-sh@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/exec-sh/-/exec-sh-0.2.0.tgz#14f75de3f20d286ef933099b2ce50a90359cef10"
@@ -2407,6 +2411,16 @@ react-devtools-core@^2.0.8:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
+react-native-fbads@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-fbads/-/react-native-fbads-4.2.0.tgz#16ca5c29083825aecef3ed7d9e9d881ff82b8b33"
+  dependencies:
+    eventemitter3 "^2.0.2"
+
+react-native-fbsdk@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-fbsdk/-/react-native-fbsdk-0.6.0.tgz#08fdc00e9ca777f724a70029a5b1c3794b49b882"
+
 react-native-fetch-blob@^0.10.5:
   version "0.10.5"
   resolved "https://registry.yarnpkg.com/react-native-fetch-blob/-/react-native-fetch-blob-0.10.5.tgz#498e5437ad604db126b46e4a06cd9cbf33d1ea42"
@@ -2414,7 +2428,7 @@ react-native-fetch-blob@^0.10.5:
     base-64 "0.1.0"
     glob "^7.0.6"
 
-react-native@0.44:
+react-native@0.44.2:
   version "0.44.2"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.44.2.tgz#c8dfb747b88e6276a991980c57c50b860a98cf0e"
   dependencies:

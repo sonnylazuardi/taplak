@@ -20,6 +20,7 @@ import {connect} from 'react-redux';
 import * as appActions from '../actions/AppActions';
 import Currency from '../utils/Currency';
 import Base64 from '../utils/Base64';
+import { BannerView } from 'react-native-fbads';
 
 const FloatingAndroid = NativeModules.FloatingAndroid;
 
@@ -276,6 +277,12 @@ class App extends React.Component {
                 </TouchableNativeFeedback>
               </View>
             </View>
+            <BannerView
+              placementId="761418297363233_761419814029748"
+              type="standard"
+              onClick={() => console.log('click')}
+              onError={(err) => console.log('error', err)}
+            />
           </View>}
       </View>
     )

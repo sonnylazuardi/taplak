@@ -14,8 +14,10 @@
   "license": "MIT",
   "dependencies": {
     "react": "16.0.0-alpha.6",
-    "react-native-fetch-blob": "^0.10.5",
     "react-native": "0.44.2",
+    "react-native-fbads": "^4.2.0",
+    "react-native-fbsdk": "^0.6.0",
+    "react-native-fetch-blob": "^0.10.5",
     "react-redux": "^5.0.5",
     "redux": "^3.6.0",
     "redux-storage": "^4.1.2",

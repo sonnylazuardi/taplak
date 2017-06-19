@@ -17,6 +17,7 @@ import * as appActions from '../actions/AppActions';
 
 const FloatingAndroid = NativeModules.FloatingAndroid;
 import Base64 from '../utils/Base64';
+import { BannerView } from 'react-native-fbads';
 
 class Login extends React.Component {
   state = {
@@ -106,6 +107,12 @@ class Login extends React.Component {
               });
             }}
           />}
+        <BannerView
+          placementId="761418297363233_761419814029748"
+          type="standard"
+          onClick={() => console.log('click')}
+          onError={(err) => console.log('error', err)}
+        />
       </View>
     )
   }
