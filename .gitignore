@@ -60,7 +60,5 @@ typings/
 
 client/
 clients/
-landing/
-server/
 
 # End of https://www.gitignore.io/api/node
