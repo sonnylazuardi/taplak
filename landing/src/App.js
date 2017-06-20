@@ -14,25 +14,25 @@ class App extends Component {
                       <div className="clear-100 hidden-xs hidden-sm hidden-md"></div>
                       <h1>Taplak - Tap To Bukalapak</h1>
                       <p>
-                         Cari dan telusuri barang semudah tap.<br />Kami butuh bantuan untuk <b>beta testing</b> dan <b>masukan</b>
+                         Cari dan telusuri barang semudah tap.<br />
                       </p>
                       <p>
-                         <a href="https://goo.gl/forms/OdHYVvS2eY9AKvZG2" className="get-early-access primary">
-                         Jadi Beta Tester
+                         <a href="https://play.google.com/store/apps/details?id=info.mejamakan.floatingview" className="get-early-access primary">
+                         Download di Play Store
                          </a> &nbsp;
-                         <a href="https://medium.com/@sonnylazuardi/the-story-of-taplak-react-native-floating-view-982b2a67cb90" className="get-early-access">
-                         Ikuti Cerita Kami
+                         <a href="http://tekno.liputan6.com/read/2986500/bukalapak-development-competition-jaring-ratusan-aplikasi-lokal" className="get-early-access">
+                         3 Besar BLDC
                          </a>
                          <br />
                       </p>
                       <div className="clear-50 hidden-lg"></div>
                       <div className="clear-100 hidden-xs hidden-sm hidden-md"></div>
                       <div className="clear-100 hidden-xs hidden-sm hidden-md"></div>
-                      <a href="https://www.youtube.com/watch?v=feMxtBa_0G8&t=1s" className="hidden-lg">
+                      <a href="https://www.youtube.com/watch?v=JVBSWPkgd8Q&t=1s" className="hidden-lg">
                       <img className="hero-screenshot-sm hidden-lg" src="/img/screenshots/mac-phone.png?v2" />
                       </a>
                    </div>
-                   <a className="hero-screenshot hidden-xs hidden-sm hidden-md" href="https://www.youtube.com/watch?v=feMxtBa_0G8&t=1s"></a>
+                   <a className="hero-screenshot hidden-xs hidden-sm hidden-md" href="https://www.youtube.com/watch?v=JVBSWPkgd8Q&t=1s"></a>
                 </div>
              </div>
           </section>
